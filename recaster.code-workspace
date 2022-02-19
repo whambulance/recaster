@@ -1,0 +1,16 @@
+{
+	"folders": [
+		{
+			"path": "."
+		}
+	],
+	"settings": {
+		"[vue]": {
+			"editor.rulers": [80],
+		},
+		"[php]": {
+			"editor.rulers": [75, 85]
+		},
+		"git.enableCommitSigning": true
+	}
+}
