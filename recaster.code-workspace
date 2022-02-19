@@ -11,6 +11,9 @@
 		"[php]": {
 			"editor.rulers": [75, 85]
 		},
+		"[typescript]": {
+			"editor.rulers": [75, 85]
+		},
 		"git.enableCommitSigning": true
 	}
 }
