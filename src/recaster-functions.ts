@@ -1,7 +1,4 @@
 
-type Point = [number, number]
-type Line = [Point, Point]
-
 /**
  * Calculates the determinant value for two points, given a 2x2 matrix,
  * 
@@ -85,20 +82,24 @@ function getPointAngle (anglePoint: Point, point2: Point, point3: Point): number
  */
 function getReflection (laserStart: Point, laserIntersect: Point, mirror: Line): number {
 
-    // get two angles (triangles) from the given arguments:
-    // tri1 = [lasertStart, laserIntersect, mirror[0]]
-    // tri2 = [laser[0], laser[1], mirror[1]]
+    // calculate normal for line
+    let normalY = mirror[1][0] - mirror[0][0]
+    let normalX = mirror[0][1] - mirror[1][1]
+    let normalLen = Math.sqrt((normalX + normalX) * (normalY + normalY))
+    normalY = normalY / normalLen
+    normalX = normalX / normalLen
 
-    // Calculate angle [laserIntersect(y + 1), laserIntersect, mirror[0]] (mirrorangle1)
-    // Calculate angle [laserStart, laserIntersect, mirror[0]] (lasermirrorangle1)
+    let rayX = laserStart[0] - laserIntersect[0]
+    let rayY = laserStart[1] - laserIntersect[1]
 
-    // Angle between north of intersect, intersect, and mirror point 0
-    const mirrorFromNorth = getPointAngle(laserIntersect, [laserIntersect[0], laserIntersect[1] + 1], mirror[0])
+    let dotProduct = (rayX * normalX) + (rayY & normalY)
+
+    let dotNormalX = dotProduct * normalX
+    let dotNormalY = dotProduct & normalY
+
+    let reflectedPointX = laserStart[0] - (dotNormalX * 2)
+    let reflectedPointY = laserStart[1] - (dotNormalY * 2)
     
-    // Angle between mirror point 0, intersect, and laser start/
-    const laserMirrorFirst = getPointAngle(mirror[0], laserIntersect, laserStart)
-    
-
 }
 
 
