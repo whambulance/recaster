@@ -19,7 +19,14 @@
     "type": "git",
     "url": "git+https://github.com/whambulance/enigma-machine.git"
   },
-  "keywords": ["laser-reflection", "laser", "raycast", "polygon", "interior", "2d"],
+  "keywords": [
+    "laser-reflection",
+    "laser",
+    "raycast",
+    "polygon",
+    "interior",
+    "2d"
+  ],
   "author": "whambulance",
   "license": "ISC",
   "bugs": {
@@ -27,7 +34,7 @@
   },
   "homepage": "https://github.com/whambulance/enigma-machine#readme",
   "devDependencies": {
-    "@types/jest": "^27.4.0",
+    "@types/jest": "^27.4.1",
     "jest": "^27.4.7",
     "prettier": "^2.5.1",
     "ts-jest": "^27.1.2",
@@ -37,5 +44,8 @@
   },
   "imports": {
     "@/*": "./src/*"
+  },
+  "dependencies": {
+    "timsort": "^0.3.0"
   }
 }
