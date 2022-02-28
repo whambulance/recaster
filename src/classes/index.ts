@@ -1,4 +1,6 @@
-class Point {
+import { distanceBetweenPoints } from '@/recaster-functions';
+
+export class Point {
     x: number;
     y: number;
 
@@ -13,7 +15,7 @@ class Point {
     }
 }
 
-class Line {
+export class Line {
     p1: Point;
     p2: Point;
 
@@ -33,12 +35,55 @@ class Line {
      * @returns Length between the two line points
      */
     get length (): number {
-        const dx = this.p2.x - this.p1.x
-        const dy = this.p2.y - this.p1.y
-        return Math.hypot(dx, dy)
+        const dx = this.p2.x - this.p1.x;
+        const dy = this.p2.y - this.p1.y;
+        return Math.hypot(dx, dy);
     }
 }
 
-export { Point, Line }
+export class Bounds {
+    lowerX: number = 0;
+    upperX: number = 0;
+    lowerY: number = 0;
+    upperY: number = 0;
+
+    constructor (lowerX: number = 0, upperX: number = 0, lowerY: number = 0, upperY: number = 0) {
+        this.lowerX = lowerX;
+        this.upperX = upperX;
+        this.lowerY = lowerY;
+        this.upperY = upperY;
+    }
+
+    public maxBoundLength (): number {
+        const topleft = new Point(this.upperX, this.lowerY)
+        const botright = new Point(this.lowerX, this.upperY)
+        return distanceBetweenPoints(topleft, botright)
+    }
+}
+
+export class BoundsGroup {
+    x: number[] = [];
+    y: number[] = [];
+
+    constructor (xList: number[] = [], yList: number[] = []) {
+        this.x.push(...xList);
+        this.y.push(...yList);
+    }
+
+    public bounds (): Bounds {
+        let timsort = require('timsort');
+
+        const sortedX = timsort.sort(this.x)
+        const sortedY = timsort.sort(this.y)
+
+        return new Bounds(
+            sortedX[0],
+            sortedX[sortedX.length - 1],
+            sortedY[0],
+            sortedY[sortedY.length - 1]
+        )
+    }
+}
+
 export * from './receptors'
 export * from './emitters'
