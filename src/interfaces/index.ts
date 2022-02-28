@@ -1,26 +1,43 @@
-import { Absorber, Laser, Line, Mirror } from '@/classes';
+import { BoundsGroup, Line, Point } from '@/classes';
 
-type Emitter = Laser;
-type Receptor = Mirror | Absorber;
+export type RayArray = Array<Line | null | -1>
 
-/**
- * An array of lines that make up a rays path. If the array
- */
-class RayPath {
-
-    public rays: Array<Line | null | -1> = []
-
-    constructor (...rays: Array<Line | null | -1>) {
-        this.rays = [...rays];
-    }
+export interface Emitter {
+    /**
+     * Generate an array of Lines, which represent starting rays for
+     * RayPaths
+     */
+    cast (): Line[];
 
     /**
-     * Push a new line into the path array
+     * For this emitter, get a BoundsGroup that fully defines the space
+     * it takes up
      */
-    public push (ray: Array<Line | null | -1>): void {
-        this.rays.push()
-    }
-
+    getUnsortedBounds (): BoundsGroup;
 }
 
-export { Emitter, Receptor, RayPath }
+export interface Receptor {
+    /**
+     * Test if a receptor intersects with a ray
+     * 
+     * @param ray The ray to test this receptors intesection with
+     */
+    testIntersect (ray: Line): Point | null;
+
+    /**
+     * Handle how the incoming ray interacts with this receptor, and
+     * return an array of outgoing rays post-interaction
+     * 
+     * @param rayStart The startpoint for the incoming ray
+     * @param intersect The point at which the ray intersects with this
+     * receptor
+     * @returns Array of lines created by this receptor
+     */
+    handle (rayStart: Point, intersect: Point): RayArray;
+
+    /**
+     * For this receptor, get a BoundsGroup that fully defines the space
+     * it takes up
+     */
+    getUnsortedBounds (): BoundsGroup;
+}
