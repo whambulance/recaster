@@ -1,13 +1,10 @@
-import { Line, Point } from ".";
+import { Emitter } from "@/interfaces";
+import { Bounds, BoundsGroup, Line, Point } from ".";
 
-class Laser {
+class Laser implements Emitter {
+
     public startPoint: Point;
     public intersectPoint: Point;
-
-    /**
-     * The path that the laser this emitter generates follows
-     */
-    public laserPath: Line[] = []
 
     constructor (startPoint: Point, intersectPoint: Point) {
         this.startPoint = startPoint;
@@ -16,6 +13,13 @@ class Laser {
 
     public cast (): Line[] {
         return [new Line(this.startPoint, this.intersectPoint)]
+    }
+
+    public getUnsortedBounds (): BoundsGroup {
+        return new BoundsGroup(
+            [this.startPoint.x, this.intersectPoint.x],
+            [this.startPoint.y, this.intersectPoint.y],
+        )
     }
 }
 
