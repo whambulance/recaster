@@ -1,5 +1,5 @@
 import { Emitter } from "@/interfaces";
-import { Bounds, BoundsGroup, Line, Point } from ".";
+import { BoundsGroup, Line, Point } from ".";
 
 class Laser implements Emitter {
 
@@ -7,6 +7,9 @@ class Laser implements Emitter {
     public intersectPoint: Point;
 
     constructor (startPoint: Point, intersectPoint: Point) {
+        if (startPoint.x === intersectPoint.x && startPoint.y === intersectPoint.y) {
+            throw new EvalError('Points cannot occupy the same space')
+        }
         this.startPoint = startPoint;
         this.intersectPoint = intersectPoint;
     }

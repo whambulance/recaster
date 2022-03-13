@@ -10,6 +10,9 @@ class Mirror implements Receptor {
      * @param mirror The line which the mirror sits on
      */
     constructor (mirror: Line) {
+        if (mirror.p1.x === mirror.p2.x && mirror.p1.y === mirror.p2.y) {
+            throw new EvalError('Zero-length lines are not allowed')
+        }
         this.mirrorLine = mirror
     }
 
