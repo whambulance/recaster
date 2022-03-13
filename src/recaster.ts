@@ -5,7 +5,7 @@ import { extendLineByLength, getClosestPoint } from './recaster-functions';
 /**
  * An array of lines that make up a rays path. If the array
  */
- export class RayPath {
+export class RayPath {
 
     /**
      * A list of resolved rays
@@ -50,13 +50,15 @@ import { extendLineByLength, getClosestPoint } from './recaster-functions';
         // ensure that the previousLine is not null or infinity (-1)
         while (pathResolution !== null && pathResolution !== -1) {
 
-            // extend the previousLine beyond the bounds of the canvas (intersectLine)
+            // extend the previousLine beyond the bounds of the canvas
+            // (intersectLine)
             const extendLength = canvasBounds.maxBoundLength()
             this.outgoingRay = extendLineByLength(this.outgoingRay, extendLength)
 
             let intersectionPoints: {intersect: Point, receptorIndex: number}[] = []
 
-            // loop over each receptor and check if the intersectLine intersects with it
+            // loop over each receptor and check if the intersectLine intersects 
+            // with it
             receptors.forEach((receptor: Receptor, key: number) => {
                 let intersect = receptor.testIntersect(this.outgoingRay)
                 if (intersect) {
@@ -74,7 +76,8 @@ import { extendLineByLength, getClosestPoint } from './recaster-functions';
                 continue
             }
             
-            // for each receptor it intersects with, figure out which one it intersects with first
+            // for each receptor it intersects with, figure out which one it 
+            // intersects with first
             const points = intersectionPoints.map(function (item) {
                 return item.intersect
             })
