@@ -1,10 +1,5 @@
 import { Line, Point } from "../classes"
-import { getReflection } from '../recaster-functions'
-
-// DO THIS NEXT
-// NEXT TIME
-// FIX THIS
-https://stackoverflow.com/questions/11706215/how-can-i-fix-the-git-error-object-file-is-empty
+import { getIntersection, getReflection } from '../recaster-functions'
 
 test('Function: getReflection', () => {
     const tests = [
@@ -36,5 +31,26 @@ test('Function: getReflection', () => {
         )
 
         expect(result).toStrictEqual(test.reflectedRay)
+    })
+})
+
+test('Function: testIntersect', () => {
+    const tests = [
+        {
+            mirror: new Line(new Point(8, -3), new Point(15, -6)),
+            ray: new Line(new Point(16, -1), new Point(16, -8)),
+            intersect: null,
+        },
+        {
+            mirror: new Line(new Point(3, 0), new Point(11, 0)),
+            ray: new Line(new Point(2, 2), new Point(12, 0)),
+            intersect: null,
+        },
+    ]
+
+    tests.forEach(test => {
+        let result = getIntersection(test.ray, test.mirror)
+
+        expect(result).toStrictEqual(test.intersect)
     })
 })
