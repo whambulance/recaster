@@ -70,17 +70,21 @@ export class BoundsGroup {
         this.y.push(...yList);
     }
 
+    private numberCompare(a: number, b: number): number {
+        return a - b;
+    }
+
     public bounds (): Bounds {
         let timsort = require('timsort');
 
-        const sortedX = timsort.sort(this.x)
-        const sortedY = timsort.sort(this.y)
+        timsort.sort(this.x, this.numberCompare)
+        timsort.sort(this.y, this.numberCompare)
 
         return new Bounds(
-            sortedX[0],
-            sortedX[sortedX.length - 1],
-            sortedY[0],
-            sortedY[sortedY.length - 1]
+            this.x[0],
+            this.x[this.x.length - 1],
+            this.y[0],
+            this.y[this.y.length - 1]
         )
     }
 }
