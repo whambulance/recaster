@@ -3,7 +3,7 @@ import { Emitter, RayArray, Receptor } from './interfaces';
 import { extendLineByLength, getClosestPoint } from './recaster-functions';
 
 /**
- * An array of lines that make up a rays path. If the array
+ * An array of lines that make up a rays path
  */
 export class RayPath {
 
@@ -46,6 +46,7 @@ export class RayPath {
      */
     public resolve (receptors: Receptor[], canvasBounds: Bounds): void {
         let pathResolution = this.pathResolution
+        this.outgoingRay = this.rays[this.rays.length - 1]
 
         // ensure that the previousLine is not null or infinity (-1)
         while (pathResolution !== null && pathResolution !== -1) {
@@ -135,9 +136,13 @@ export class Recaster {
     public canvasBoundsGroup = new BoundsGroup();
     public canvasBounds = new Bounds();
 
-    public solveRayPaths (): void {
-        this.emitters.forEach((emitter: Emitter, key: number) => {
+    public solve (): void {
+        this.rayPaths = []
+        this.initRayPaths()
+        this.resolveBounds()
 
+        this.rayPaths.forEach((rayPath: RayPath, key: number) => {
+            rayPath.resolve(this.receptors, this.canvasBounds)
         })
     }
 
@@ -146,7 +151,11 @@ export class Recaster {
      */
     public initRayPaths (): void {
         this.emitters.forEach((emitter: Emitter, key: number) => {
-
+            let newLines = emitter.cast();
+            newLines.forEach((line: Line) => {
+                let newRayPath = new RayPath(line)
+                this.rayPaths.push(newRayPath)
+            })
         })
     }
 
