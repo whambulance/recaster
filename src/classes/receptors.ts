@@ -1,4 +1,4 @@
-import { RayArray, Receptor } from "@/interfaces"
+import { RayResolutions, Receptor } from "@/interfaces"
 import { getIntersection, getReflection } from "@/recaster-functions"
 import { BoundsGroup, Line, Point } from "."
 
@@ -20,7 +20,7 @@ class Mirror implements Receptor {
         return getIntersection(ray, this.mirrorLine)
     }
 
-    public handle (rayStart: Point, intersect: Point): RayArray {
+    public handle (rayStart: Point, intersect: Point): Array<Line | RayResolutions.Ended> {
         const reflectedLine = getReflection(rayStart, intersect, this.mirrorLine)
         return [ reflectedLine ]
     }
@@ -40,14 +40,15 @@ class Absorber implements Receptor {
         this.absorberLine = absorber
     }
 
-    public handle (rayStart: Point, intersect: Point): RayArray {
-        // incomplete
-        return [new Line(new Point(0, 0), new Point(0, 0))]
+    public handle (rayStart: Point, intersect: Point): Array<Line | RayResolutions.Ended> {
+        return [RayResolutions.Ended]
     }
 
-    public getUnsortedBounds (): BoundsGroup {
-        // incomplete
-        return new BoundsGroup()
+    public getUnsortedBounds (): BoundsGroup {  
+        return new BoundsGroup(
+            [this.absorberLine.p1.x, this.absorberLine.p2.x],
+            [this.absorberLine.p1.y, this.absorberLine.p2.y],
+        )
     }
 
     public testIntersect (ray: Line): Point | null {
