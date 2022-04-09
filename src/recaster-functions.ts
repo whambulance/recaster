@@ -1,3 +1,4 @@
+import Decimal from "decimal.js";
 import { Line, Point } from "./classes"
 
 /**
@@ -45,23 +46,8 @@ function doLinesIntersect (line1: Line, line2: Line): boolean {
     // General case
     if (o1 != o2 && o3 != o4) return true
 
-    // // Special Cases - commented because I don't actually want to count these
-    // // as intersections
-    // // line1.p1, line1.p2 and line2.p1 are collinear and line2.p1 lies on segment line1.p1line1.p2
-    // if (o1 == 0 && onSegment(line1.p1, line2.p1, line1.p2)) return true;
-   
-    // // line1.p1, line1.p2 and line2.p2 are collinear and line2.p2 lies on segment line1.p1line1.p2
-    // if (o2 == 0 && onSegment(line1.p1, line2.p2, line1.p2)) return true;
-   
-    // // line2.p1, line2.p2 and line1.p1 are collinear and line1.p1 lies on segment line2.p1line2.p2
-    // if (o3 == 0 && onSegment(line2.p1, line1.p1, line2.p2)) return true;
-   
-    // // line2.p1, line2.p2 and line1.p2 are collinear and line1.p2 lies on segment line2.p1line2.p2
-    // if (o4 == 0 && onSegment(line2.p1, line1.p2, line2.p2)) return true;
-
     return false
 }
-
 
 /**
  * Calculates the determinant value for two points, given a 2x2 matrix,
@@ -71,7 +57,10 @@ function doLinesIntersect (line1: Line, line2: Line): boolean {
  * @returns Determinant number
  */
 export function calcDet (point1: Point, point2: Point): number {
-    return  point1.x * point2.y - point1.y * point2.x
+    const num1 = new Decimal(point1.x).times(point2.y)
+    const num2 = new Decimal(point1.y).times(point2.x)
+    return num1.minus(num2).toNumber();
+    // return point1.x * point2.y - point1.y * point2.x
 }
 
 /**
@@ -89,14 +78,20 @@ export function getIntersection (line1: Line, line2: Line): Point | null {
         return null
     }
     
-    const xdiff = new Point(line1.p1.x - line1.p2.x, line2.p1.x - line2.p2.x)
-    const ydiff = new Point(line1.p1.y - line1.p2.y, line2.p1.y - line2.p2.y)
+    const xdiff = new Point(
+        new Decimal(line1.p1.x).minus(line1.p2.x).toNumber(),
+        new Decimal(line2.p1.x).minus(line2.p2.x).toNumber()
+    )
+    const ydiff = new Point(
+        new Decimal(line1.p1.y).minus(line1.p2.y).toNumber(),
+        new Decimal(line2.p1.y).minus(line2.p2.y).toNumber()
+    )
 
     const div = calcDet(xdiff, ydiff)
 
     const d = new Point(calcDet(line1.p1, line1.p2), calcDet(line2.p1, line2.p2))
-    const x: number = calcDet(d, xdiff) / div
-    const y: number = calcDet(d, ydiff) / div
+    const x: number = new Decimal(calcDet(d, xdiff)).dividedBy(div).toDecimalPlaces(12).toNumber()
+    const y: number = new Decimal(calcDet(d, ydiff)).dividedBy(div).toDecimalPlaces(12).toNumber()
     const intersectionPoint = new Point(x, y)
     
     return intersectionPoint
@@ -133,10 +128,10 @@ export function getClosestPoint (origin: Point, points: Point[]): Point {
  */
 export function extendLineByLength (line: Line, extension: number): Line {
     const lineLength = line.length
-    const newX = line.p2.x + (line.p2.x - line.p1.x) / lineLength * extension
-    const newY = line.p2.x + (line.p2.x - line.p1.x) / lineLength * extension
-    
-    return new Line(line.p1, new Point(newX, newY))
+    const newX = new Decimal(line.p2.x).minus(line.p1.x).dividedBy(lineLength).times(extension).add(line.p2.x);
+    const newY = new Decimal(line.p2.y).minus(line.p1.y).dividedBy(lineLength).times(extension).add(line.p2.y);
+
+    return new Line(line.p1, new Point(newX.toNumber(), newY.toNumber()))
 }
 
 /**
