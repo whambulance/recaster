@@ -1,85 +1,74 @@
+import Decimal from "decimal.js"
 import { Laser, Line, Mirror, Point } from "../classes"
+import { calcDet, extendLineByLength, getIntersection } from "../recaster-functions"
 
 describe('Receptor: Mirror', () => {
-
-  test('Invalid input values', () => {
-    const point1 = new Point(0, 0)
-    const point2 = new Point(0, 0)
-    const invalidLine = new Line(point1, point2)
     
-    expect(() => {
-      new Mirror(invalidLine)
-    }).toThrow(EvalError)
-  })
-
-  test('Intersections and Reflections', () => {
-
-    const pointSets = [
-      {
-        mirror: [[7, 5], [4, 8]],
-        ray: [[1, 2], [7, 8]],
-        intersect: [5.5, 6.5],
-        reflectedRay: [[5.5, 6.5], [1, 2]],
-      },
-      {
-        mirror: [[3, 3], [11, 3]],
-        ray: [[3, 5], [7, 3]],
-        intersect: [7, 3],
-        reflectedRay: [[7, 3], [11, 5]],
-      },
-      {
-        mirror: [[3, 0], [11, 0]],
-        ray: [[2, 2], [12, 0]],
-        intersect: null,
-        reflectedRay: null,
-      },
-      {
-        mirror: [[3, 0], [11, 0]],
-        ray: [[2, 0], [7, 0]],
-        intersect: null,
-        reflectedRay: null,
-      },
-    ]
-
-    pointSets.forEach(pointset => {
-      // define mirror
-      const mirrorPoint1 = new Point(pointset.mirror[0][0], pointset.mirror[0][1])
-      const mirrorPoint2 = new Point(pointset.mirror[1][0], pointset.mirror[1][1])
-      const mirrorLine = new Line(mirrorPoint1, mirrorPoint2)
-      const mirror = new Mirror(mirrorLine)
-
-      // define incoming ray
-      const rayPoint1 = new Point(pointset.ray[0][0], pointset.ray[0][1])
-      const rayPoint2 = new Point(pointset.ray[1][0], pointset.ray[1][1])
-      const ray = new Line(rayPoint1, rayPoint2)
-
-      // define whether it intersects, and the intersect point if so
-      const hasIntersect = !!pointset.intersect
-      const mirrorTestIntersect = mirror.testIntersect(ray)
-
-      if (hasIntersect) {
-        const intersectPoint = new Point(pointset.intersect[0], pointset.intersect[1])
-        expect(mirrorTestIntersect).toStrictEqual(intersectPoint)
-      } else {
-        expect(mirrorTestIntersect).toEqual(null)
-      }
-
-      if (hasIntersect) {
-        const intersectPoint = new Point(pointset.intersect[0], pointset.intersect[1])
-        // calculate the reflected ray if it exists
-        const reflectPoint1 = new Point(
-          pointset.reflectedRay[0][0], pointset.reflectedRay[0][1]
-        )
-        const reflectPoint2 = new Point(
-          pointset.reflectedRay[1][0], pointset.reflectedRay[1][1]
-        )
-        const reflectedRay =  new Line(reflectPoint1, reflectPoint2)
+    test('Invalid input values', () => {
+        const point1 = new Point(0, 0)
+        const point2 = new Point(0, 0)
+        const invalidLine = new Line(point1, point2)
         
-        const mirrorHandle = mirror.handle(ray.p1, intersectPoint)
-        expect(mirrorHandle).toStrictEqual([reflectedRay])
-      }
+        expect(() => {
+            new Mirror(invalidLine)
+        }).toThrow(EvalError)
     })
+    
+    describe('Resolving reflection dataset', () => {
 
-  })
+        const dataset = [
+            {
+                name: 'Generic true reflection 1',
+                mirror: new Mirror(new Line(new Point(7, 5), new Point(4, 8))),
+                ray: new Line(new Point(1, 2), new Point(7, 8)),
+                intersect: new Point(5.5, 6.5),
+                reflectedRay: new Line(new Point(5.5, 6.5), new Point(1, 2)),
+            },
+            {
+                name: 'Generic true reflection 2',
+                mirror: new Mirror(new Line(new Point(3, 3), new Point(11, 3))),
+                ray: new Line(new Point(3, 5), new Point(7, 3)),
+                intersect: new Point(7, 3),
+                reflectedRay: new Line(new Point(7, 3), new Point(11, 5)),
+            },
+            {
+                name: 'Generic false reflection 1',
+                mirror: new Mirror(new Line(new Point(3, 0), new Point(11, 0))),
+                ray: new Line(new Point(2, 2), new Point(12, 0)),
+                intersect: null,
+                reflectedRay: null,
+            },
+            {
+                name: 'Generic false reflection 2',
+                mirror: new Mirror(new Line(new Point(3, 0), new Point(11, 0))),
+                ray: new Line(new Point(2, 0), new Point(7, 0)),
+                intersect: null,
+                reflectedRay: null,
+            },
+            {
+                name: 'Generic short true reflection 1',
+                mirror: new Mirror(new Line(new Point(9, 0), new Point(13, 4))),
+                ray: new Line(new Point(3, 2), new Point(6, 2)),
+                intersect: new Point(11, 2),
+                reflectedRay: new Line(new Point(11, 2), new Point(11, 10)),
+            },
+        ]
 
+        it.each(dataset)(
+            '$name',
+            ({ mirror, ray, intersect, reflectedRay }) => {
+                let extendedRay = extendLineByLength(ray, 100)
+
+                const mirrorTestIntersect = mirror.testIntersect(extendedRay)
+                expect(mirrorTestIntersect).toStrictEqual(intersect)
+
+                if (intersect) {
+                    const mirrorHandle = mirror.handle(ray.p1, intersect)
+                    expect(mirrorHandle).toStrictEqual([reflectedRay])
+                }
+            }
+        )
+    })
+    
 })
+        
