@@ -1,41 +1,45 @@
 import { Bounds, BoundsGroup, Line, Point } from '@/classes';
-import { Emitter, RayArray, Receptor } from './interfaces';
-import { extendLineByLength, getClosestPoint } from './recaster-functions';
+import { Emitter, RayOutput, RayResolutions, Receptor } from './interfaces';
+import { distanceBetweenPoints, extendLineByLength } from './recaster-functions';
 
 /**
- * An array of lines that make up a rays path
+ * An array of lines that make up a ray
  */
-export class RayPath {
+export class Ray {
 
     /**
      * A list of resolved rays
      */
-    public rays: RayArray = []
+    public resolvedRays: Line[] = []
 
     /**
      * The current outgoing ray which requires resolving
      */
-    public outgoingRay: Line = null as any
+    public currentRay: Line = null as any
+
+    /**
+     * How the current ray has been resolved, if at all it has been
+     */
+    public rayResolution: RayResolutions = 0
+
+    /**
+     * The upper limit on the total number of rays that should be 
+     * calculated when resolving
+     */
+    public raysLimit: number = 0
+
+    /**
+     * Key of the last intersected receptor
+     */
+    public lastIntersectedReceptor: number = -1 as any
 
     /**
      * Initalize a raypath, giving the initial line array
      * @param ray The initial ray this path starts along
      */
     constructor (ray: Line) {
-        this.rays = [ray];
-    }
-
-    /**
-     * Push a new line into the path array
-     */
-    public push (ray: RayArray): void {
-        const pathResolution = this.pathResolution
-
-        if (pathResolution === -1 || pathResolution === null) {
-            throw new EvalError(`Unable to push into RayPath. RayPath currently ends with value ${pathResolution}`);
-        } else {
-            this.rays.push(...ray)
-        }
+        this.currentRay = ray
+        this.rayResolution = RayResolutions.Unresolved
     }
 
     /**
@@ -44,117 +48,143 @@ export class RayPath {
      * @param canvasBounds The outer boundaries of the canvas
      * interact with
      */
-    public resolve (receptors: Receptor[], canvasBounds: Bounds): void {
-        let pathResolution = this.pathResolution
-        this.outgoingRay = this.rays[this.rays.length - 1]
+    public resolve (receptors: Receptor[], canvasBounds: Bounds): RayOutput {
 
-        // ensure that the previousLine is not null or infinity (-1)
-        while (pathResolution !== null && pathResolution !== -1) {
+        // determine the max bound length of the canvas so we know how far
+        // to extend our rays by
+        const extendLength = canvasBounds.maxBoundLength()
 
-            // extend the previousLine beyond the bounds of the canvas
-            // (intersectLine)
-            const extendLength = canvasBounds.maxBoundLength()
-            this.outgoingRay = extendLineByLength(this.outgoingRay, extendLength)
+        // counter if we need to construct a limit
+        let counter = 0
 
-            let intersectionPoints: {intersect: Point, receptorIndex: number}[] = []
+        // ensure that the RayResolution is unresolved, and that the 
+        // counter is below the limit
+        while (
+            this.rayResolution === RayResolutions.Unresolved
+            && counter < ( this.raysLimit ? this.raysLimit : 1200 ) 
+        ) {
+
+            // extend the current ray by the max bound length
+            this.currentRay = extendLineByLength(this.currentRay, extendLength)
+            let intersectionPoints: {
+                receptor: Receptor,
+                key: number,
+                intersect: Point,
+                distance: number
+            }[] = []
 
             // loop over each receptor and check if the intersectLine intersects 
             // with it
             receptors.forEach((receptor: Receptor, key: number) => {
-                let intersect = receptor.testIntersect(this.outgoingRay)
+                if (this.lastIntersectedReceptor === key) {
+                    return
+                }
+
+                let intersect = receptor.testIntersect(this.currentRay)
                 if (intersect) {
                     intersectionPoints.push({
+                        receptor: receptor,
+                        key: key,
                         intersect: intersect,
-                        receptorIndex: key
+                        distance: distanceBetweenPoints(
+                            this.currentRay.p1, intersect
+                        )
                     })
                 }
             })
 
             // if intersectline doesn't intersect anything, then push -1 (infinity),
             // and continue (this path is considered complete)
-            if (!receptors.length) {
-                this.push([-1])
+            if (!intersectionPoints.length) {
+                this.rayResolution = RayResolutions.Infinity
+                this.resolvedRays.push(this.currentRay)
                 continue
             }
-            
-            // for each receptor it intersects with, figure out which one it 
-            // intersects with first
-            const points = intersectionPoints.map(function (item) {
-                return item.intersect
-            })
-            const closestPoint = getClosestPoint(this.outgoingRay.p1, points)
-            this.outgoingRay.p2 = closestPoint
 
-            let intersectedReceptor: Receptor = null as any
-            intersectionPoints.forEach(item => {
-                if (item.intersect === closestPoint) {
-                    intersectedReceptor = receptors[item.receptorIndex]
-                }
+            // sort by distance to find the closest point
+            intersectionPoints.sort((a, b) => {
+                if (a.distance < b.distance) return -1
+                else if (a.distance > b.distance) return 1
+                else return 0
             })
+
+            // get the receptor into a variable, shorten the currentray to the
+            // intersection point
+            const intersectedReceptor = intersectionPoints[0].receptor
+            this.lastIntersectedReceptor = intersectionPoints[0].key
+            this.currentRay.p2 = intersectionPoints[0].intersect
 
             // let the receptor it intersects with first handle intersectLine, and
             // return the newly created line(s)
             const newRays = intersectedReceptor.handle(
-                this.outgoingRay.p1,
-                this.outgoingRay.p2
+                this.currentRay.p1,
+                this.currentRay.p2
             )
-
+            
             // set intersectLine to the new line
-            this.push([this.outgoingRay, ...newRays.slice(0, -1)])
-            let lastRay = newRays[newRays.length - 1]
-            if (lastRay === -1 || lastRay === null) {
-                this.push([lastRay])
-            } else {
-                this.outgoingRay = lastRay
+            this.resolvedRays.push(this.currentRay)
+            this.currentRay = null as any
+
+            if (newRays.length > 1) {
+                // figure out what to do here, because we will likely need
+                // to resolve multiple raypaths - meaning we would need to
+                // create more raypaths in the parent
             }
 
-            // get pathresolution again for the while loop
-            pathResolution = this.pathResolution
+            if (newRays[0] instanceof Line) {
+                this.currentRay = newRays[0]
+            } else {
+                this.rayResolution = RayResolutions.Ended
+            }
+        }
+
+        return {
+            rays: this.resolvedRays,
+            resolution: this.rayResolution
         }
     }
 
-    /**
-     * Get how this path currently resolves
-     * 
-     * @returns Line Returns a Line if unresolved
-     * @returns null Returns null if resolved and ends at the previous line
-     * @returns -1 Returns -1 if the raypath continues to infinity
-     */
-    get pathResolution (): Line | null | -1 {
-        return this.rays[this.rays.length - 1]
+    get output (): RayOutput {
+        return {
+            rays: this.resolvedRays,
+            resolution: this.rayResolution
+        }
     }
-
 }
 
 export class Recaster {
 
-    public emitters: Emitter[] = [];
-    public receptors: Receptor[] = [];
+    public emitters: Emitter[] = []
+    public receptors: Receptor[] = []
 
-    public rayPaths: RayPath[] = [];
+    public rays: Ray[] = []
+    public rayOutputs: RayOutput[] = []
 
-    public canvasBoundsGroup = new BoundsGroup();
-    public canvasBounds = new Bounds();
+    public canvasBoundsGroup = new BoundsGroup()
+    public canvasBounds = new Bounds()
 
-    public solve (): void {
-        this.rayPaths = []
-        this.initRayPaths()
+    public solve (): RayOutput[] {
+        this.rays = []
+        this.initRays()
         this.resolveBounds()
 
-        this.rayPaths.forEach((rayPath: RayPath, key: number) => {
-            rayPath.resolve(this.receptors, this.canvasBounds)
+        this.rays.forEach((rayPath: Ray, key: number) => {
+            let output = rayPath.resolve(this.receptors, this.canvasBounds)
+            this.rayOutputs.push(output)
         })
+
+        return this.rayOutputs
     }
 
     /**
      * Generate RayPaths from our registered emitters
      */
-    public initRayPaths (): void {
+    public initRays (): void {
         this.emitters.forEach((emitter: Emitter, key: number) => {
             let newLines = emitter.cast();
             newLines.forEach((line: Line) => {
-                let newRayPath = new RayPath(line)
-                this.rayPaths.push(newRayPath)
+                let newRayPath = new Ray(line)
+                this.rays.push(newRayPath)
             })
         })
     }
