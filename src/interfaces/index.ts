@@ -1,6 +1,17 @@
 import { BoundsGroup, Line, Point } from '@/classes';
 
-export type RayArray = Array<Line | null | -1>
+// export type RayArray = Array<Line | null | -1>
+
+export enum RayResolutions {
+    Unresolved = 0,
+    Ended = 1,
+    Infinity = 2,
+}
+
+export interface RayOutput {
+    rays: Line[]
+    resolution: RayResolutions
+}
 
 export interface Emitter {
     /**
@@ -33,7 +44,7 @@ export interface Receptor {
      * receptor
      * @returns Array of lines created by this receptor
      */
-    handle (rayStart: Point, intersect: Point): RayArray;
+    handle (rayStart: Point, intersect: Point): Array<Line | RayResolutions.Ended>;
 
     /**
      * For this receptor, get a BoundsGroup that fully defines the space
