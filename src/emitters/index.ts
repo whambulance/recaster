@@ -1,1 +1,1 @@
-export * from './laser'
+export * from './laser';

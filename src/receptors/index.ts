@@ -1,2 +1,2 @@
-export * from './absorber'
-export * from './mirror'
+export * from './absorber';
+export * from './mirror';
