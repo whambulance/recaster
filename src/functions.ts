@@ -1,22 +1,5 @@
 import Decimal from "decimal.js";
-import { Line, Point } from "./classes"
-
-/**
- * Given three co-linear points, check if point q lies on line (q, r)
- * 
- * @param p First collinear point
- * @param q Second collinear point
- * @param r Third collinear point
- * @returns boolean
- */
-function onSegment(p: Point, q: Point, r: Point)
-{
-    if (q.x <= Math.max(p.x, r.x) && q.x >= Math.min(p.x, r.x) &&
-        q.y <= Math.max(p.y, r.y) && q.y >= Math.min(p.y, r.y))
-    return true;
-   
-    return false;
-}
+import { Line, Point } from "@/classes"
 
 /**
  * Find the orientation of an ordered triplet (p, q, r)
@@ -29,9 +12,9 @@ function onSegment(p: Point, q: Point, r: Point)
  * @returns 2 --> points are counter-clockwise
  */
 function pointOrientation (p: Point, q: Point, r: Point): 0 | 1 | 2 {
-    let val = (q.y - p.y) * (r.x - q.x) - (q.x - p.x) * (r.y - q.y);
+    const val = (q.y - p.y) * (r.x - q.x) - (q.x - p.x) * (r.y - q.y);
    
-    if (val == 0) return 0; // collinear
+    if (val === 0) return 0; // collinear
    
     return (val > 0) ? 1 : 2; // clock or counterclock wise
 }
@@ -44,7 +27,7 @@ function doLinesIntersect (line1: Line, line2: Line): boolean {
     const o4 = pointOrientation(line2.p1, line2.p2, line1.p2)
 
     // General case
-    if (o1 != o2 && o3 != o4) return true
+    if (o1 !== o2 && o3 !== o4) return true
 
     return false
 }
@@ -110,7 +93,7 @@ export function getClosestPoint (origin: Point, points: Point[]): Point {
     let minPoint: Point = new Point(0, 0)
 
     for (const point of points) {
-        let distance = distanceBetweenPoints(origin, point)
+        const distance = distanceBetweenPoints(origin, point)
         if (minDistance === null || minDistance > distance) {
             minDistance = distance
             minPoint = point
