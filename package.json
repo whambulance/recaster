@@ -1,7 +1,7 @@
 {
   "name": "@whambulance/recaster",
   "version": "1.1.1",
-  "description": "Determine 2d laser reflection inside a polygon",
+  "description": "2D Ray reflection engine",
   "main": "src/recaster.ts",
   "types": "src/interfaces/index.ts",
   "scripts": {
@@ -17,22 +17,22 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/whambulance/enigma-machine.git"
+    "url": "git+https://github.com/whambulance/recaster.git"
   },
   "keywords": [
     "laser-reflection",
     "laser",
     "raycast",
-    "polygon",
-    "interior",
+    "engine",
+    "reflection",
     "2d"
   ],
   "author": "whambulance",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/whambulance/enigma-machine/issues"
+    "url": "https://github.com/whambulance/recaster/issues"
   },
-  "homepage": "https://github.com/whambulance/enigma-machine#readme",
+  "homepage": "https://github.com/whambulance/recaster#readme",
   "devDependencies": {
     "@types/jest": "^27.4.1",
     "jest": "^27.4.7",
