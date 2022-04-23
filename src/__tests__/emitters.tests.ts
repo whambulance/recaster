@@ -1,6 +1,6 @@
 // Ensure emitters are functioning correctl
 import { BoundsGroup, Line, Point } from '../classes'
-import { Laser } from '../classes'
+import { Laser } from '../emitters'
 
 test('Emitter: Laser', () => {
   

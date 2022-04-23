@@ -1,5 +1,5 @@
 import { Line, Point } from "../classes"
-import { distanceBetweenPoints, extendLineByLength, getIntersection, getReflection } from '../recaster-functions'
+import { extendLineByLength, getIntersection, getReflection } from '../functions'
 
 describe('Function: getReflection', () => {
     const dataset = [

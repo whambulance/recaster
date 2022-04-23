@@ -1,7 +1,8 @@
-import { Bounds, Laser, Line, Mirror, Point } from "../classes"
+import { Bounds, Line, Point } from "../classes"
+import { Mirror } from '../receptors'
 import { RayResolutions } from "../interfaces"
-import { Ray } from "../recaster"
-import { extendLineByLength } from "../recaster-functions"
+import { Ray } from "../classes"
+import { extendLineByLength } from "../functions"
 
 const dataset = [
     {
@@ -21,23 +22,23 @@ const dataset = [
             resolution: RayResolutions.Infinity
         }
     },
-    {
-        name: 'Ray reflecting off of convergence between two mirrors',
-        ray: new Line(new Point(19, 0), new Point(25, 4)),
-        receptors: [
-            new Mirror(new Line(new Point(21, 0), new Point(25, 4))),
-            new Mirror(new Line(new Point(21, 8), new Point(25, 4))),
-        ],
-        bounds: new Bounds(21, 25, 0, 8),
-        rayoutput: {
-            rays: [
-                new Line(new Point(19, 0), new Point(25, 4)),
-                new Line(new Point(25, 4), new Point(25, 4)),
-                new Line(new Point(25, 4), new Point(19, 8)),
-            ],
-            resolution: RayResolutions.Infinity
-        }
-    },
+    // {
+    //     name: 'Ray reflecting off of convergence between two mirrors',
+    //     ray: new Line(new Point(19, 0), new Point(25, 4)),
+    //     receptors: [
+    //         new Mirror(new Line(new Point(21, 0), new Point(25, 4))),
+    //         new Mirror(new Line(new Point(21, 8), new Point(25, 4))),
+    //     ],
+    //     bounds: new Bounds(21, 25, 0, 8),
+    //     rayoutput: {
+    //         rays: [
+    //             new Line(new Point(19, 0), new Point(25, 4)),
+    //             new Line(new Point(25, 4), new Point(25, 4)),
+    //             new Line(new Point(25, 4), new Point(19, 8)),
+    //         ],
+    //         resolution: RayResolutions.Infinity
+    //     }
+    // },
 ]
 
 describe('Ray dataset tests', () => {

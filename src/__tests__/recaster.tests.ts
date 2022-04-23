@@ -1,4 +1,6 @@
-import { Laser, Line, Mirror, Point } from "../classes"
+import { Line, Point } from "../classes"
+import { Laser } from '../emitters'
+import { Mirror } from '../receptors'
 import { RayResolutions } from "../interfaces"
 import { Recaster } from '../recaster'
 

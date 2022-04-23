@@ -1,6 +1,6 @@
-import Decimal from "decimal.js"
-import { Laser, Line, Mirror, Point } from "../classes"
-import { calcDet, extendLineByLength, getIntersection } from "../recaster-functions"
+import { Line, Point } from "../classes"
+import { Mirror } from '../receptors'
+import { extendLineByLength } from "../functions"
 
 describe('Receptor: Mirror', () => {
     
