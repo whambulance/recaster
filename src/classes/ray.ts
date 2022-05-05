@@ -138,6 +138,48 @@ export class Ray {
     };
   }
 
+  /**
+   * UNFINISHED - FINISH THIS #################################################################################
+   * If the final ray continues to infinity, extend it past the screen 
+   * bounds to ensure it is properly rendered
+   * @param screenbounds Bounds for the screen
+   * @returns boolean If the line was successfully extended past the 
+   * screen bounds
+   */
+  public extendPastScreenBounds(screenbounds: BoundsGroup): boolean {
+    if (this.rayResolution !== RayResolutions.Infinity) {
+      return false
+    }
+
+    let intersections = []
+    let lines = [] as Line[]
+
+    const bounds = screenbounds.bounds()
+    let point1 = new Point(bounds.lowerX, bounds.lowerY)
+    let point2 = new Point(bounds.lowerX, bounds.upperY)
+    let point3 = new Point(bounds.upperX, bounds.lowerY)
+    let point4 = new Point(bounds.upperX, bounds.upperY)
+
+    lines.push(new Line(point1, point2))
+    lines.push(new Line(point2, point3))
+    lines.push(new Line(point3, point4))
+    lines.push(new Line(point4, point1))
+
+    lines.forEach((line: Line) => {
+      let intersect = getIntersection(this.resolvedRays[this.resolvedRays.length], line)
+      if (intersect) {
+        intersections.push(intersect)
+      }
+    })
+
+    /**
+     * Todo: determine the last possible intersect
+     * extend the last line past the the intersect (extend the bounds by like +/- 100 in each direction)
+     */
+
+    return true
+  }
+
   get output(): RayOutput {
     return {
       rays: this.resolvedRays,
