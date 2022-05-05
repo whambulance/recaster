@@ -6,10 +6,6 @@
     "outDir": "./lib",
     "strict": true,
     "esModuleInterop": true,
-    "baseUrl": ".",
-    "paths": {
-      "@/*": ["./src/*"]
-    },
     "moduleResolution": "node",
     "forceConsistentCasingInFileNames": true
   },

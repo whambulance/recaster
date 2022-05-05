@@ -1,6 +1,7 @@
-import { extendLineByLength, distanceBetweenPoints } from '@/functions';
-import { RayResolutions, Receptor, RayOutput } from '@/interfaces';
+import { extendLineByLength, distanceBetweenPoints, getIntersection } from '../functions';
+import { RayResolutions, Receptor, RayOutput } from '../interfaces';
 import { Bounds } from './bounds';
+import { BoundsGroup } from './boundsgroup';
 import { Line } from './line';
 import { Point } from './point';
 

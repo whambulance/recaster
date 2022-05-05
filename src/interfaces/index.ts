@@ -1,4 +1,4 @@
-import { BoundsGroup, Line, Point } from '@/classes';
+import { BoundsGroup, Line, Point } from '../classes';
 
 export enum RayResolutions {
   Unresolved = 0,

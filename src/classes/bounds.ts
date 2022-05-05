@@ -1,4 +1,4 @@
-import { distanceBetweenPoints } from '@/functions';
+import { distanceBetweenPoints } from '../functions';
 import { Point } from './point';
 
 export class Bounds {

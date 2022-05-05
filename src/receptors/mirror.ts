@@ -1,6 +1,6 @@
-import { BoundsGroup, Line, Point } from '@/classes';
-import { RayResolutions, Receptor } from '@/interfaces';
-import { getIntersection, getReflection } from '@/functions';
+import { BoundsGroup, Line, Point } from '../classes';
+import { RayResolutions, Receptor } from '../interfaces';
+import { getIntersection, getReflection } from '../functions';
 
 export class Mirror implements Receptor {
   public mirrorLine: Line;

@@ -1,6 +1,6 @@
-import { Laser } from '@/emitters';
-import { Mirror, Absorber } from '@/receptors';
-import { Ray } from '@/classes';
-import { Recaster } from '@/recaster';
-
-export { Recaster, }
+export { Laser } from './emitters';
+export { Mirror, Absorber } from './receptors';
+export { Ray } from './classes';
+export { Recaster } from './recaster';
+export { Point, Line } from './classes';
+export { Emitter, Receptor, RayOutput, RayResolutions } from './interfaces'

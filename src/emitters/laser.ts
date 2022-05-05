@@ -1,5 +1,5 @@
-import { Emitter } from '@/interfaces';
-import { BoundsGroup, Line, Point } from '@/classes';
+import { Emitter } from '../interfaces';
+import { BoundsGroup, Line, Point } from '../classes';
 
 export class Laser implements Emitter {
   public startPoint: Point;

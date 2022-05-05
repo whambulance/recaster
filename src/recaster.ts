@@ -1,4 +1,4 @@
-import { Bounds, BoundsGroup, Line } from '@/classes';
+import { Bounds, BoundsGroup, Line } from './classes';
 import { Emitter, RayOutput, Receptor } from './interfaces';
 import { Ray } from './classes/ray';
 

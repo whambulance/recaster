@@ -1,6 +1,6 @@
-import { Line, Point, BoundsGroup } from '@/classes';
-import { RayResolutions, Receptor } from '@/interfaces';
-import { getIntersection } from '@/functions';
+import { Line, Point, BoundsGroup } from '../classes';
+import { RayResolutions, Receptor } from '../interfaces';
+import { getIntersection } from '../functions';
 
 export class Absorber implements Receptor {
   public absorberLine: Line;

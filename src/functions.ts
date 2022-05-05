@@ -1,5 +1,5 @@
 import Decimal from 'decimal.js';
-import { Line, Point } from '@/classes';
+import { Line, Point } from './classes';
 
 /**
  * Find the orientation of an ordered triplet (p, q, r)
@@ -42,7 +42,6 @@ export function calcDet(point1: Point, point2: Point): number {
   const num1 = new Decimal(point1.x).times(point2.y);
   const num2 = new Decimal(point1.y).times(point2.x);
   return num1.minus(num2).toNumber();
-  // return point1.x * point2.y - point1.y * point2.x
 }
 
 /**
