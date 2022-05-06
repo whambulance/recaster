@@ -12,8 +12,13 @@ export class Recaster {
   public canvasBoundsGroup = new BoundsGroup();
   public canvasBounds = new Bounds();
 
+  public screenBoundsGroup = new BoundsGroup();
+  public screenBounds = new Bounds();
+  public useScreenBounds = true as boolean;
+
   public solve(): RayOutput[] {
     this.rays = [];
+    this.rayOutputs = [];
     this.initRays();
     this.resolveBounds();
 
