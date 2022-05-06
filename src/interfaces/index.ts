@@ -25,9 +25,9 @@ export interface Emitter {
   getUnsortedBounds(): BoundsGroup;
 
   /**
-   * Returns a list of points used by this emitter
+   * Property which contains a list of points used by this emitter
    */
-  get points(): Point[];
+  points: Point[];
 }
 
 export interface Receptor {
@@ -56,7 +56,7 @@ export interface Receptor {
   getUnsortedBounds(): BoundsGroup;
 
   /**
-   * Returns a list of points used by this receptor
+   * Property which contains a list of points used by this receptor
    */
-  get points(): Point[];
+  points: Point[];
 }
