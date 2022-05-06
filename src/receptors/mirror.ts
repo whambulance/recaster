@@ -9,11 +9,11 @@ export class Mirror implements Receptor {
    * Construct a mirror between two points
    * @param mirror The line which the mirror sits on
    */
-  constructor(mirror: Line) {
-    if (mirror.p1.x === mirror.p2.x && mirror.p1.y === mirror.p2.y) {
+  constructor(startPoint: Point, endPoint: Point) {
+    if (startPoint.x === endPoint.x && startPoint.y === endPoint.y) {
       throw new EvalError('Zero-length lines are not allowed');
     }
-    this.mirrorLine = mirror;
+    this.mirrorLine = new Line(startPoint, endPoint);
   }
 
   public testIntersect(ray: Line): Point | null {
@@ -27,5 +27,9 @@ export class Mirror implements Receptor {
 
   public getUnsortedBounds(): BoundsGroup {
     return new BoundsGroup([this.mirrorLine.p1.x, this.mirrorLine.p2.x], [this.mirrorLine.p1.y, this.mirrorLine.p2.y]);
+  }
+
+  get points(): Point[] {
+    return [this.mirrorLine.p1, this.mirrorLine.p2];
   }
 }

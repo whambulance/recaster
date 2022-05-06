@@ -9,8 +9,8 @@ const dataset = [
     name: 'Ray and two mirrors',
     ray: new Line(new Point(3, 2), new Point(6, 2)),
     receptors: [
-      new Mirror(new Line(new Point(9, 0), new Point(13, 4))),
-      new Mirror(new Line(new Point(9, 6), new Point(13, 10))),
+      new Mirror(new Point(9, 0), new Point(13, 4)),
+      new Mirror(new Point(9, 6), new Point(13, 10)),
     ],
     bounds: new Bounds(3, 17, 0, 10),
     rayoutput: {
