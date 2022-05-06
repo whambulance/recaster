@@ -151,14 +151,14 @@ export class Ray {
       return false
     }
 
-    let intersections = []
-    let lines = [] as Line[]
+    const intersections = []
+    const lines = [] as Line[]
 
     const bounds = screenbounds.bounds()
-    let point1 = new Point(bounds.lowerX, bounds.lowerY)
-    let point2 = new Point(bounds.lowerX, bounds.upperY)
-    let point3 = new Point(bounds.upperX, bounds.lowerY)
-    let point4 = new Point(bounds.upperX, bounds.upperY)
+    const point1 = new Point(bounds.lowerX, bounds.lowerY)
+    const point2 = new Point(bounds.lowerX, bounds.upperY)
+    const point3 = new Point(bounds.upperX, bounds.lowerY)
+    const point4 = new Point(bounds.upperX, bounds.upperY)
 
     lines.push(new Line(point1, point2))
     lines.push(new Line(point2, point3))
@@ -166,7 +166,7 @@ export class Ray {
     lines.push(new Line(point4, point1))
 
     lines.forEach((line: Line) => {
-      let intersect = getIntersection(this.resolvedRays[this.resolvedRays.length], line)
+      const intersect = getIntersection(this.resolvedRays[this.resolvedRays.length], line)
       if (intersect) {
         intersections.push(intersect)
       }
