@@ -20,4 +20,8 @@ export class Laser implements Emitter {
   public getUnsortedBounds(): BoundsGroup {
     return new BoundsGroup([this.startPoint.x, this.intersectPoint.x], [this.startPoint.y, this.intersectPoint.y]);
   }
+
+  get points(): Point[] {
+    return [this.startPoint, this.intersectPoint];
+  }
 }

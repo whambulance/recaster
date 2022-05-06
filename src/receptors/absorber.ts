@@ -23,4 +23,8 @@ export class Absorber implements Receptor {
   public testIntersect(ray: Line): Point | null {
     return getIntersection(ray, this.absorberLine);
   }
+
+  get points(): Point[] {
+      return [this.absorberLine.p1, this.absorberLine.p2];
+  }
 }
