@@ -25,6 +25,6 @@ export class Absorber implements Receptor {
   }
 
   get points(): Point[] {
-      return [this.absorberLine.p1, this.absorberLine.p2];
+    return [this.absorberLine.p1, this.absorberLine.p2];
   }
 }

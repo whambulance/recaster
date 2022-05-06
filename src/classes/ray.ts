@@ -140,44 +140,44 @@ export class Ray {
 
   /**
    * UNFINISHED - FINISH THIS #################################################################################
-   * If the final ray continues to infinity, extend it past the screen 
+   * If the final ray continues to infinity, extend it past the screen
    * bounds to ensure it is properly rendered
    * @param screenbounds Bounds for the screen
-   * @returns boolean If the line was successfully extended past the 
+   * @returns boolean If the line was successfully extended past the
    * screen bounds
    */
   public extendPastScreenBounds(screenbounds: BoundsGroup): boolean {
     if (this.rayResolution !== RayResolutions.Infinity) {
-      return false
+      return false;
     }
 
-    const intersections = []
-    const lines = [] as Line[]
+    const intersections = [];
+    const lines = [] as Line[];
 
-    const bounds = screenbounds.bounds()
-    const point1 = new Point(bounds.lowerX, bounds.lowerY)
-    const point2 = new Point(bounds.lowerX, bounds.upperY)
-    const point3 = new Point(bounds.upperX, bounds.lowerY)
-    const point4 = new Point(bounds.upperX, bounds.upperY)
+    const bounds = screenbounds.bounds();
+    const point1 = new Point(bounds.lowerX, bounds.lowerY);
+    const point2 = new Point(bounds.lowerX, bounds.upperY);
+    const point3 = new Point(bounds.upperX, bounds.lowerY);
+    const point4 = new Point(bounds.upperX, bounds.upperY);
 
-    lines.push(new Line(point1, point2))
-    lines.push(new Line(point2, point3))
-    lines.push(new Line(point3, point4))
-    lines.push(new Line(point4, point1))
+    lines.push(new Line(point1, point2));
+    lines.push(new Line(point2, point3));
+    lines.push(new Line(point3, point4));
+    lines.push(new Line(point4, point1));
 
     lines.forEach((line: Line) => {
-      const intersect = getIntersection(this.resolvedRays[this.resolvedRays.length], line)
+      const intersect = getIntersection(this.resolvedRays[this.resolvedRays.length], line);
       if (intersect) {
-        intersections.push(intersect)
+        intersections.push(intersect);
       }
-    })
+    });
 
     /**
      * Todo: determine the last possible intersect
      * extend the last line past the the intersect (extend the bounds by like +/- 100 in each direction)
      */
 
-    return true
+    return true;
   }
 
   get output(): RayOutput {
