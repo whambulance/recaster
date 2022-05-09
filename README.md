@@ -32,6 +32,18 @@ const intersect = new Point(5, 8);
 const newLaser = new Laser(start, intersect);
 recaster.addEmitter(newLaser)
 ```
+## Beam
+The Beam Emitter generates a number of rays, directly out of a single line. The Beam class constructor accepts two Points:
+* **firstPoint** The first point of the Beam line
+* **secondPoint** The second point of the Beam line
+```ts
+import { Beam, Point } from "@whambulance/recaster";
+const firstPoint = new Point(2, 3);
+const secondPoint = new Point(5, 8);
+
+const newBeam = new Beam(firstPoint, secondPoint);
+recaster.addEmitter(newBeam)
+```
 # Receptors
 ## Mirror
 The Mirror Receptor is a straight line mirror, which reflects any rays that it intercepts in any direction. The Mirror class constructor accepts two Points - which refer to the two edge points of the Mirror
