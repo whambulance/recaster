@@ -1,4 +1,4 @@
-export { Laser } from './emitters';
+export { Laser, Beam } from './emitters';
 export { Mirror, Absorber } from './receptors';
 export { Ray } from './classes';
 export { Recaster } from './recaster';
