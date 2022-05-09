@@ -1,6 +1,7 @@
 import { Bounds, BoundsGroup, Line } from './classes';
 import { Emitter, RayOutput, Receptor } from './interfaces';
 import { Ray } from './classes/ray';
+import { Beam } from './emitters';
 
 export class Recaster {
   public emitters: Emitter[] = [];
@@ -16,9 +17,7 @@ export class Recaster {
   public screenBounds: Bounds = new Bounds();
   public useScreenBounds: Boolean = true;
 
-  public screenBoundsGroup = new BoundsGroup();
-  public screenBounds = new Bounds();
-  public useScreenBounds = true as boolean;
+  public emitterDensity: number = .2; 
 
   public solve(): RayOutput[] {
     this.rays = [];
@@ -39,6 +38,9 @@ export class Recaster {
    */
   public initRays(): void {
     this.emitters.forEach((emitter: Emitter, key: number) => {
+      if (emitter instanceof Beam) {
+        emitter.density = this.emitterDensity
+      }
       const newLines = emitter.cast();
       newLines.forEach((line: Line) => {
         const newRayPath = new Ray(line);
@@ -69,6 +71,15 @@ export class Recaster {
     });
 
     this.canvasBounds = this.canvasBoundsGroup.bounds();
+  }
+
+  public setDensity(density: number): void {
+    if (density < 0 || density > 1) {
+      throw new EvalError('Invalid Density value')
+    }
+
+    this.emitterDensity = density;
+    this.solve();
   }
 
   public addEmitter(emitter: Emitter): void {
