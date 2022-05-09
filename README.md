@@ -3,6 +3,8 @@
 
 [![NPM Version][npm-image]][npm-url]
 
+[View Demo](https://jackbrooker.me/projects/recaster)
+
 Recaster is an extendable 2d raycasting engine. Built in typescript, it's easy to extend and add more variations and objects for the engine to work with!
 ## Using Recaster in your project
 Recaster is easy to import, simply import the `Recaster` class into your project to begin
