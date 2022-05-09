@@ -9,8 +9,12 @@ export class Recaster {
   public rays: Ray[] = [];
   public rayOutputs: RayOutput[] = [];
 
-  public canvasBoundsGroup = new BoundsGroup();
-  public canvasBounds = new Bounds();
+  public canvasBoundsGroup: BoundsGroup = new BoundsGroup();
+  public canvasBounds: Bounds = new Bounds();
+
+  public screenBoundsGroup: BoundsGroup = new BoundsGroup();
+  public screenBounds: Bounds = new Bounds();
+  public useScreenBounds: Boolean = true;
 
   public screenBoundsGroup = new BoundsGroup();
   public screenBounds = new Bounds();
