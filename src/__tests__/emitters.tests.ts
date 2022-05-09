@@ -50,22 +50,21 @@ test('Emitter: Laser', () => {
 
 describe('Emitter: Beam', () => {
   const datasets = [
-    {
-      name: 'Basic test 1',
-      line: new Line(new Point(1, 1), new Point(3, 3)),
-      density: null,
-      perpendicularLine: [
-        new Line(new Point(2, 2), new Point(3, 3)),
-      ],
-    },
+    // {
+    //   name: 'Basic test 1',
+    //   line: new Line(new Point(1, 1), new Point(3, 3)),
+    //   density: null,
+    //   perpendicularLine: [
+    //     new Line(new Point(2, 2), new Point(3, 3)),
+    //   ],
+    // },
     {
       name: 'Basic test 2',
       line: new Line(new Point(1, 1), new Point(3, 3)),
       density: 1,
       perpendicularLine: [
-        new Line(new Point(1, 1), new Point(3, 3)),
-        new Line(new Point(1, 1), new Point(3, 3)),
-        new Line(new Point(1, 1), new Point(3, 3)),
+        new Line(new Point(1.7071067811865475, 1.7071067811865475), new Point(2.414213562373095, 1)),
+        new Line(new Point(2.414213562373095, 2.414213562373095), new Point(3.1213203435596424, 1.7071067811865475)),
       ],
     },
   ]

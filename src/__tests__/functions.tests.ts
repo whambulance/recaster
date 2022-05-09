@@ -96,7 +96,7 @@ describe('Function: getPerpendicularPoint', () => {
       name: 'Simple 45 degree test',
       line: new Line(new Point(1, 1), new Point(3, 3)),
       point: new Point(2, 2),
-      returnedLine: new Line(new Point(2, 2), new Point(4, 0))
+      returnedLine: new Line(new Point(2, 2), new Point(2.7071067811865475, 1.2928932188134525))
     }
   ]
 
