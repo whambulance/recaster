@@ -1,5 +1,5 @@
 import { Line, Point } from '../classes';
-import { extendLineByLength, getIntersection, getReflection } from '../functions';
+import { extendLineByLength, getIntersection, getPerpendicularLine, getReflection } from '../functions';
 
 describe('Function: getReflection', () => {
   const dataset = [
@@ -89,3 +89,20 @@ describe('Function: extendLineByLength', () => {
     expect(testExtendedLine).toStrictEqual(newLine);
   });
 });
+
+describe('Function: getPerpendicularPoint', () => {
+  const dataset = [
+    {
+      name: 'Simple 45 degree test',
+      line: new Line(new Point(1, 1), new Point(3, 3)),
+      point: new Point(2, 2),
+      returnedLine: new Line(new Point(2, 2), new Point(4, 0))
+    }
+  ]
+
+  it.each(dataset)('$name', ({ line, point, returnedLine }) => {
+    const testReturnedLine = getPerpendicularLine(line, point);
+
+    expect(testReturnedLine).toStrictEqual(returnedLine);
+  })
+})

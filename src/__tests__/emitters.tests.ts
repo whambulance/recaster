@@ -1,6 +1,6 @@
 // Ensure emitters are functioning correctl
 import { BoundsGroup, Line, Point } from '../classes';
-import { Laser } from '../emitters';
+import { Beam, Laser } from '../emitters';
 
 test('Emitter: Laser', () => {
   let pointSets = [
@@ -47,3 +47,36 @@ test('Emitter: Laser', () => {
     }
   });
 });
+
+describe('Emitter: Beam', () => {
+  const datasets = [
+    {
+      name: 'Basic test 1',
+      line: new Line(new Point(1, 1), new Point(3, 3)),
+      density: null,
+      perpendicularLine: [
+        new Line(new Point(2, 2), new Point(3, 3)),
+      ],
+    },
+    {
+      name: 'Basic test 2',
+      line: new Line(new Point(1, 1), new Point(3, 3)),
+      density: 1,
+      perpendicularLine: [
+        new Line(new Point(1, 1), new Point(3, 3)),
+        new Line(new Point(1, 1), new Point(3, 3)),
+        new Line(new Point(1, 1), new Point(3, 3)),
+      ],
+    },
+  ]
+
+  it.each(datasets)('$name', ({ line, density, perpendicularLine }) => {
+    let testBeam = new Beam(line.p1, line.p2)
+    if (density) {
+      testBeam.setDensity(density)
+    }
+    let testRays = testBeam.cast()
+    
+    expect(testRays).toStrictEqual(perpendicularLine)
+  })
+})
