@@ -15,7 +15,7 @@ export class Recaster {
 
   public screenBoundsGroup: BoundsGroup = new BoundsGroup();
   public screenBounds: Bounds = new Bounds();
-  public useScreenBounds: Boolean = true;
+  public useScreenBounds: boolean = true;
 
   public emitterDensity: number = .2; 
 

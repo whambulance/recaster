@@ -17,7 +17,7 @@ export class Beam implements Emitter {
 
   public cast(): Line[] {
     const beamLine = new Line(this.firstPoint, this.secondPoint)
-    let lines: Line[] = [];
+    const lines: Line[] = [];
     const totalDistance = distanceBetweenPoints(this.firstPoint, this.secondPoint);
     const totalLines = totalDistance * this.density
     const xDelta = (this.secondPoint.x - this.firstPoint.x) / totalLines
