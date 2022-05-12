@@ -1,7 +1,7 @@
 import { Line, Point } from "../classes";
 
 /**
- * Returns an angle of reflection, given an incoming line and mirror to
+ * Returns an outgoing reflected line, given an incoming line and mirror to
  * reflect against
  * @param laserStart The start point of the laser
  * @param intersect The point at which the laser intersects the mirror
@@ -41,4 +41,22 @@ export function getReflection(laserStart: Point, intersect: Point, mirror: Line)
     const reflectedPoint = new Point(reflectedPointX, reflectedPointY);
   
     return new Line(intersect, reflectedPoint);
+}
+
+/**
+ * Returns an outgoing refracted line, given an incoming line, refractive
+ * index, and surface to refract through
+ * @param laserStart The start point of the laser
+ * @param intersect The point at which the laser intersects the mirror
+ * @param index The Refractive index
+ * @param surface The line to reflect against
+ * @returns Angle of reflection, 0 representing positive travel along the
+ * y axis
+ */
+export function getRefraction(laserStart: Point, intersect: Point, index: number, surface: Line): number {
+    const theta1 = Math.atan2(intersect.y - laserStart.y, intersect.x - laserStart.x)
+    
+    const theta2 = Math.asin( ( 1  * Math.sin(theta1) ) / index )
+
+    return theta2
 }
