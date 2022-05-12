@@ -1,5 +1,5 @@
 import Decimal from "decimal.js";
-import { Line, Point } from "../classes";
+import { Line, Point, Vector } from "../classes";
 
 /**
  * Find the orientation of an ordered triplet (p, q, r)
@@ -78,13 +78,84 @@ export function getIntersection(line1: Line, line2: Line): Point | null {
   return intersectionPoint;
 }
 
+// Not working and unused
+// ----------------------------------------------------------------------------------
+// export function doesLineIntersectcircle(line: Line, center: Point, radius: number): boolean {
+//   const dirVector = new Vector(line.p2.x - line.p1.x, line.p2.y - line.p1.y);
+//   const circVector = new Vector(line.p1.x - center.x, line.p1.y - center.y);
+
+//   const slope = (line.p2.y - line.p1.y) / (line.p2.x - line.p1.x)
+
+//   const a = dirVector.dot(dirVector)
+//   const b = 2 * circVector.dot(dirVector)
+//   const c = circVector.dot(circVector) - (radius * radius)
+
+//   console.log('a, b, c', `${a}, ${b}, ${c}`)
+
+//   let discriminant = (b * b) - (4 * a * c)
+
+//   console.log('discriminant', discriminant)
+
+//   if (discriminant < 0) {
+//     console.log('failed at first')
+//     return false
+//   } else {
+//     console.log('continued')
+//     discriminant = Math.sqrt(discriminant)
+
+//     const t1 = (-b - discriminant) / (2 * a);
+//     const t2 = (-b + discriminant) / (2 * a);
+
+//     if( t1 >= 0 && t1 <= 1 ) {
+//       // t1 is the intersection, and it's closer than t2
+//       // (since t1 uses -b - discriminant)
+//       // Impale, Poke
+//       return true;
+//     } else if( t2 >= 0 && t2 <= 1 ) {
+//       // here t1 didn't intersect so we are either started
+//       // inside the sphere or completely past it
+//       // ExitWound
+//       return true;
+//     } else {
+//       // no intn: FallShort, Past, CompletelyInside
+//       return false;
+//     }
+//   }
+// }
+
 /**
- * Test if an incoming line intersects a given circle
+ * Test if an incoming line intersects a given circle. If it does, return the
+ * intersection points, otherwise return null
  * 
  * @param line The incoming line to test intersection with
  * @param center The center of the circle to intersect
  * @param radius The radius of the circle being intersected
  */
-export function getCircleIntersection(line: Line, center: Point, radius: number): Point | null {
-    
+export function getCircleIntersection(line: Line, center: Point, radius: number): Point[] | null {
+  const dx = line.p2.x - line.p1.x;
+  const dy = line.p2.y - line.p1.y;
+
+  const lineLength = line.length
+  var ux = dx / lineLength;
+  var uy = dy / lineLength;
+
+  var cu = ((center.x - line.p1.x) * ux + (center.y - line.p1.y) * uy);
+  var px = line.p1.x + cu * ux;
+  var py = line.p1.y + cu * uy;
+
+  const discriminant = Math.sqrt((radius * radius) - (px - center.x) * (px - center.x) - (py - center.y) * (py - center.y));
+
+  if (isNaN(discriminant)) {
+    return null
+  }
+
+  const point1 = new Point(px + ux * discriminant, py + uy * discriminant);
+  const point2 = new Point(px - ux * discriminant, py - uy * discriminant);
+  let intersectPoints = [point1]
+
+  if (JSON.stringify(point1) !== JSON.stringify(point2)) {
+    intersectPoints.push(point2)
+  }
+
+  return intersectPoints
 }
