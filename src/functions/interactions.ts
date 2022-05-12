@@ -60,3 +60,27 @@ export function getRefraction(laserStart: Point, intersect: Point, index: number
 
     return theta2
 }
+
+// working out for getRefraction
+
+// n1 = refractive index of 1st material
+// n2 = refractive index of 2nd material
+
+// theta1 = angle of incidence for incoming ray (angle from line perpendicular to surface it intersects)
+// theta2 = angle of incidence for outogoing ray
+
+// n1 * sine( theta1 ) = n2 * sine ( theta2 )
+
+// (n1 * sine (theta1 ) ) / n2 = sine( theta2 )
+
+// arcsine ( ( n1 * sine ( theta1 )) / n2 ) = theta2
+
+// theta1 = 20
+// n1 = 1
+// n2 = 1.49
+// sine(theta1) = 0.34202014332566873304409961468226
+// n1 * sine ( theta1 ) = 0.34202014332566873304409961468226
+// ( n1 * sine ( theta1 )) / n2 = 0.2295437203527978074121473924042
+// arcsine ( ( n1 * sine ( theta1 )) / n2 ) = 13.270210153999865125356403318962
+
+// 0.656397
