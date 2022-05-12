@@ -34,3 +34,17 @@ export function getPerpendicularLine(line: Line, point: Point): Line {
   
     return new Line(point, new Point(x, y))
 }
+
+/**
+ * Tests whether a point lies on a line between two other points
+ * 
+ * @param point The point to use
+ * @param line The line to check against
+ */
+export function isPointOnLine(point: Point, line: Line): Boolean {
+    if (line.p1.x == point.x) return line.p2.x == point.x;
+    // if AC is horizontal
+    if (line.p1.y == point.y) return line.p2.y == point.y;
+    // match the gradients
+    return (line.p1.x - point.x)*(line.p1.y - point.y) == (point.x - line.p2.x)*(point.y - line.p2.y);
+}
