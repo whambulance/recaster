@@ -1,33 +1,100 @@
 import { BoundsGroup, Circle, Line, Point, Triangle } from '../classes';
 import { RayResolutions, Receptor } from '../interfaces';
-import { getIntersection, getReflection } from '../functions';
+import { extendLineByLength, getIntersection, getReflection, getRefraction, isPointInRectangle, isPointOnLine } from '../functions';
 import { Rectangle } from '../classes/rectangle';
 
-// export class Refractor implements Receptor {
-//   public shape: Rectangle | Circle | Triangle;
+export class Refractor implements Receptor {
+  public shape: Rectangle | Circle | Triangle;
 
-//   /**
-//    * Construct a mirror between two points
-//    * @param mirror The line which the mirror sits on
-//    */
-//   constructor(shape: Rectangle | Circle | Triangle) {
-//     this.shape = shape;
-//   }
+  /**
+   * Construct a mirror between two points
+   * @param mirror The line which the mirror sits on
+   */
+  constructor(shape: Rectangle | Circle | Triangle) {
+    this.shape = shape;
+  }
 
-//   public testIntersect(ray: Line): Point | null {
-//     return this.shape.getShapeIntersection(ray);
-//   }
+  public testIntersect(ray: Line): Point | null {
+    return this.shape.getShapeIntersection(ray);
+  }
 
-//   public handle(rayStart: Point, intersect: Point): Line[] | RayResolutions.Ended[] {
-//     const reflectedLine = getReflection(rayStart, intersect, this.mirrorLine);
-//     return [reflectedLine];
-//   }
+  public handle(rayStart: Point, intersect: Point): Line[] | RayResolutions.Ended[] {
+    let returnArray: Line[] = [];
 
-//   public getUnsortedBounds(): BoundsGroup {
-//     return new BoundsGroup([this.mirrorLine.p1.x, this.mirrorLine.p2.x], [this.mirrorLine.p1.y, this.mirrorLine.p2.y]);
-//   }
+    if (this.shape instanceof Rectangle) {
+      let line = this.handleRectangle(rayStart, intersect)
+      let boundsLength = this.getUnsortedBounds().bounds().maxBoundLength();
+      let extendedLine = extendLineByLength(line, boundsLength);
+      let newIntersectPoint = this.testIntersect(extendedLine)
 
-//   get points(): Point[] {
-//     return [this.mirrorLine.p1, this.mirrorLine.p2];
-//   }
-// }
+      if (newIntersectPoint) {
+        let internalLine = new Line(extendedLine.p1, newIntersectPoint)
+        returnArray.push(internalLine)
+        let extenalLine = this.handleRectangle(internalLine.p1, internalLine.p2)
+        returnArray.push(extenalLine);
+      } else {
+        returnArray.push(extendedLine)
+      }
+
+    } else if (this.shape instanceof Triangle) {
+      // handle
+    } else if (this.shape instanceof Circle) {
+      // handle
+    }
+
+    return returnArray;
+  }
+
+  private handleRectangle (rayStart: Point, intersect: Point): Line {
+    if (!(this.shape instanceof Rectangle)) {
+      throw new EvalError('Shape is not instance of rectangle')
+    }
+
+    let intersectedLine: Line = null as any;
+    let startOnEdge: Boolean = false;
+    let startInShape: Boolean = isPointInRectangle(rayStart, this.shape)
+
+    this.shape.lines.forEach((line: Line) => {
+      if (isPointOnLine(intersect, line)) {
+        intersectedLine = line;
+      }
+      if (isPointOnLine(rayStart, line)) {
+        startOnEdge = true
+      }
+    })
+
+    if (!intersectedLine) {
+      throw new EvalError('Point provided does not intersect shapes edge')
+    }
+    
+    let refractionIndex = startOnEdge || startInShape ? 1.51 : 1 / 1.51;
+    // let refractionIndex = 1.51
+    console.log('refractionindex', refractionIndex)
+    const refractedLine = getRefraction(rayStart, intersect, refractionIndex, intersectedLine);
+
+    return refractedLine
+  }
+
+  public getUnsortedBounds(): BoundsGroup {
+    let xArray: number[] = []
+    let yArray: number[] = []
+
+    if (this.shape instanceof Rectangle || this.shape instanceof Triangle) {
+      this.shape.points.forEach((point: Point) => {
+        xArray.push(point.x)
+        yArray.push(point.y)
+      })
+    } else if (this.shape instanceof Circle) {
+      const radius = this.shape.radius
+      const center = this.shape.center
+      xArray.push(center.x + radius, center.x - radius)
+      yArray.push(center.y + radius, center.y - radius)
+    }
+
+    return new BoundsGroup(xArray, yArray);
+  }
+
+  get points(): Point[] {
+    return this.shape.points;
+  }
+}

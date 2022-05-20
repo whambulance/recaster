@@ -1,5 +1,5 @@
-import { Line, Point } from '../classes';
-import { Mirror } from '../receptors';
+import { Line, Point, Rectangle } from '../classes';
+import { Mirror, Refractor } from '../receptors';
 import { extendLineByLength } from '../functions';
 
 describe('Receptor: Mirror', () => {
@@ -62,5 +62,33 @@ describe('Receptor: Mirror', () => {
         expect(mirrorHandle).toStrictEqual([reflectedRay]);
       }
     });
+  });
+});
+
+describe('Receptor: Refractor', () => {
+
+  describe('Refraction dataset', () => {
+    const dataset = [
+      {
+        name: 'Basic rectangle refraction',
+        rayStart: new Point(2, 11),
+        intersect: new Point(6, 15),
+        rectangle: new Rectangle(
+          new Point(2, 15), new Point(10, 15), new Point(10, 17), new Point(2, 17)
+        ),
+        output: [
+          new Line(new Point(6, 15), new Point(7.05996810604, 17)),
+          new Line(new Point(7.05996810604, 17), new Point(9, 19)),
+        ],
+      },
+    ];
+
+    it.each(dataset)('$name', ({rayStart, intersect, rectangle, output}) => {
+      let refractor = new Refractor(rectangle);
+      let testOutput = refractor.handle(rayStart, intersect);
+
+      expect(testOutput).toStrictEqual(output);
+    });
+
   });
 });
