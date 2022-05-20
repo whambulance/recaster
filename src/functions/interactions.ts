@@ -6,8 +6,7 @@ import { Line, Point } from "../classes";
  * @param laserStart The start point of the laser
  * @param intersect The point at which the laser intersects the mirror
  * @param Mirror The line to reflect against
- * @returns Angle of reflection, 0 representing positive travel along the
- * y axis
+ * @returns Outgoing line after reflection has taken place
  */
 export function getReflection(laserStart: Point, intersect: Point, mirror: Line): Line {
     // calculate normal for line
@@ -50,37 +49,29 @@ export function getReflection(laserStart: Point, intersect: Point, mirror: Line)
  * @param intersect The point at which the laser intersects the mirror
  * @param index The Refractive index
  * @param surface The line to reflect against
- * @returns Angle of reflection, 0 representing positive travel along the
- * y axis
+ * @returns Outgoing line after refraction has taken place
  */
-export function getRefraction(laserStart: Point, intersect: Point, index: number, surface: Line): number {
-    const theta1 = Math.atan2(intersect.y - laserStart.y, intersect.x - laserStart.x)
-    
-    const theta2 = Math.asin( ( 1  * Math.sin(theta1) ) / index )
+export function getRefraction(laserStart: Point, intersect: Point, index: number, surface: Line): Line {
+    const theta1 = Math.atan2(intersect.y - laserStart.y, intersect.x - laserStart.x);
+    const lineAngle = Math.atan2(surface.p2.y - surface.p1.y, surface.p2.x - surface.p1.x) % Math.PI;
 
-    return theta2
+    // console.log('theta1', theta1)
+    // console.log('lineangle', lineAngle)
+    // console.log('surface', surface.p1, surface.p2)
+
+    // Take the angle of the line away from theta1, "correcting" it against the x-axis
+    const correctedTheta1 = theta1 - lineAngle;
+
+    const theta2 = Math.asin(( 1  * Math.sin(correctedTheta1) ) / index);
+    // Add the angle of the line back onto theta2, "correcting" it against the x-axis
+    const correctedTheta2 = Math.PI - (theta2 - lineAngle);
+
+    // console.log('theta2', correctedTheta2)
+    // console.log('theta2 calc 1', correctedTheta2 - (Math.PI / 2))
+
+    const newX = Math.cos(correctedTheta2 - (Math.PI / 2)) + intersect.x
+    const newY = Math.sin(correctedTheta2 - (Math.PI / 2)) + intersect.y
+    const newPoint = new Point(newX, newY);
+
+    return new Line(intersect, newPoint);
 }
-
-// working out for getRefraction
-
-// n1 = refractive index of 1st material
-// n2 = refractive index of 2nd material
-
-// theta1 = angle of incidence for incoming ray (angle from line perpendicular to surface it intersects)
-// theta2 = angle of incidence for outogoing ray
-
-// n1 * sine( theta1 ) = n2 * sine ( theta2 )
-
-// (n1 * sine (theta1 ) ) / n2 = sine( theta2 )
-
-// arcsine ( ( n1 * sine ( theta1 )) / n2 ) = theta2
-
-// theta1 = 20
-// n1 = 1
-// n2 = 1.49
-// sine(theta1) = 0.34202014332566873304409961468226
-// n1 * sine ( theta1 ) = 0.34202014332566873304409961468226
-// ( n1 * sine ( theta1 )) / n2 = 0.2295437203527978074121473924042
-// arcsine ( ( n1 * sine ( theta1 )) / n2 ) = 13.270210153999865125356403318962
-
-// 0.656397
