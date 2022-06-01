@@ -1,5 +1,6 @@
 import Decimal from "decimal.js";
 import { Line, Point } from "../classes";
+import { distanceBetweenPoints } from "./points";
 
 /**
  * Extend a line by a given value
@@ -46,5 +47,7 @@ export function isPointOnLine(point: Point, line: Line): Boolean {
     // if AC is horizontal
     if (line.p1.y == point.y) return line.p2.y == point.y;
     // match the gradients
-    return (line.p1.x - point.x) * (line.p1.y - point.y) === (point.x - line.p2.x) * (point.y - line.p2.y);
+    let distance1 = distanceBetweenPoints(line.p1, point)
+    let distance2 = distanceBetweenPoints(line.p2, point)
+    return (distance1 + distance2) === line.length
 }

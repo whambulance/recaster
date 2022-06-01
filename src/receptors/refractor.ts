@@ -25,7 +25,9 @@ export class Refractor implements Receptor {
       let line = this.handleRectangle(rayStart, intersect)
       let boundsLength = this.getUnsortedBounds().bounds().maxBoundLength();
       let extendedLine = extendLineByLength(line, boundsLength);
+      console.log('extendedLine', extendedLine)
       let newIntersectPoint = this.testIntersect(extendedLine)
+      console.log('newIntersectPoint', newIntersectPoint)
 
       if (newIntersectPoint) {
         let internalLine = new Line(extendedLine.p1, newIntersectPoint)
@@ -54,6 +56,8 @@ export class Refractor implements Receptor {
     let startOnEdge: Boolean = false;
     let startInShape: Boolean = isPointInRectangle(rayStart, this.shape)
 
+    console.log('lines', this.shape.lines)
+    console.log('intersect', intersect)
     this.shape.lines.forEach((line: Line) => {
       if (isPointOnLine(intersect, line)) {
         intersectedLine = line;
@@ -67,7 +71,7 @@ export class Refractor implements Receptor {
       throw new EvalError('Point provided does not intersect shapes edge')
     }
     
-    let refractionIndex = startOnEdge || startInShape ? 1.51 : 1 / 1.51;
+    let refractionIndex = startOnEdge || startInShape ? 1 / 1.51 : 1.51;
     // let refractionIndex = 1.51
     console.log('refractionindex', refractionIndex)
     const refractedLine = getRefraction(rayStart, intersect, refractionIndex, intersectedLine);

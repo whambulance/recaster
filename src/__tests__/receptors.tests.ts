@@ -78,6 +78,18 @@ describe('Receptor: Refractor', () => {
         ),
         output: [
           new Line(new Point(6, 15), new Point(7.05996810604, 17)),
+          new Line(new Point(7.05996810604, 17), new Point(7.645119582936019, 17.8109240094401)),
+        ],
+      },
+      {
+        name: 'Advanced angled quadrilateral refraction',
+        rayStart: new Point(1, 0),
+        intersect: new Point(3, 2),
+        rectangle: new Rectangle(
+          new Point(3, 0), new Point(8, 0), new Point(8, 4), new Point(3, 3)
+        ),
+        output: [
+          new Line(new Point(6, 15), new Point(7.05996810604, 17)),
           new Line(new Point(7.05996810604, 17), new Point(9, 19)),
         ],
       },

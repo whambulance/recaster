@@ -29,7 +29,7 @@ export class Rectangle implements Shape {
 
         lines.forEach((shapeLine: Line) => {
             let lineIntersect = getIntersection(line, shapeLine);
-            if (lineIntersect) {
+            if (lineIntersect && JSON.stringify(lineIntersect) !== JSON.stringify(line.p1)) {
                 intersect = lineIntersect;
             }
         });

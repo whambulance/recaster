@@ -42,6 +42,17 @@ export function getReflection(laserStart: Point, intersect: Point, mirror: Line)
     return new Line(intersect, reflectedPoint);
 }
 
+export interface refractionObject {
+    laserStart: Point,
+    intersect: Point,
+    theta1: number,
+    lineAngle: number,
+    surface: Line,
+    correctedTheta1: number,
+    theta2: number,
+    correctedTheta2: number,
+}
+
 /**
  * Returns an outgoing refracted line, given an incoming line, refractive
  * index, and surface to refract through
@@ -52,25 +63,50 @@ export function getReflection(laserStart: Point, intersect: Point, mirror: Line)
  * @returns Outgoing line after refraction has taken place
  */
 export function getRefraction(laserStart: Point, intersect: Point, index: number, surface: Line): Line {
+    // Calculates angle of laser & line from pi radians on a circle. i.e. y=0 along x-axis
     const theta1 = Math.atan2(intersect.y - laserStart.y, intersect.x - laserStart.x);
-    const lineAngle = Math.atan2(surface.p2.y - surface.p1.y, surface.p2.x - surface.p1.x) % Math.PI;
+    const lineAngle = Math.abs(Math.atan2(surface.p2.y - surface.p1.y, surface.p2.x - surface.p1.x) % Math.PI);
 
-    // console.log('theta1', theta1)
-    // console.log('lineangle', lineAngle)
-    // console.log('surface', surface.p1, surface.p2)
+    console.log('getrefraction', {
+        laserStart: laserStart,
+        intersect: intersect,
+        index: index,
+        surface: surface,
+    })
 
     // Take the angle of the line away from theta1, "correcting" it against the x-axis
-    const correctedTheta1 = theta1 - lineAngle;
+    const correctedTheta1 = (((theta1 >= 0 ? 1 : -1) * 1.5707963268) - theta1) + lineAngle;
+    // const correctedTheta1 = (1.5707963268 - theta1);
+    console.log('step1', Math.abs(Math.sin(correctedTheta1)))
+    console.log('step2', Math.abs(Math.sin(correctedTheta1)) * (1 / index))
+    console.log('step3', Math.asin(Math.abs(Math.sin(correctedTheta1)) * (1 / index)))
+    const theta2 = Math.asin(Math.abs(Math.sin(correctedTheta1)) / index);
 
-    const theta2 = Math.asin(( 1  * Math.sin(correctedTheta1) ) / index);
+    // BUGGED - FIX THIS - asin not properly calculating
+
+    console.log('theta2', theta2)
+
     // Add the angle of the line back onto theta2, "correcting" it against the x-axis
-    const correctedTheta2 = Math.PI - (theta2 - lineAngle);
+    const correctedTheta2 = (((theta1 >= 0 ? 1 : 0) * Math.PI) - theta2) + lineAngle;
 
-    // console.log('theta2', correctedTheta2)
-    // console.log('theta2 calc 1', correctedTheta2 - (Math.PI / 2))
+    // let output: refractionObject = {
+    //     laserStart: laserStart,
+    //     intersect: intersect,
+    //     theta1: theta1,
+    //     lineAngle: lineAngle,
+    //     surface: surface,
+    //     correctedTheta1: correctedTheta1,
+    //     theta2: theta2,
+    //     correctedTheta2: correctedTheta2,
+    // }
 
-    const newX = Math.cos(correctedTheta2 - (Math.PI / 2)) + intersect.x
-    const newY = Math.sin(correctedTheta2 - (Math.PI / 2)) + intersect.y
+    // console.log('output', output)
+    // return output
+
+    console.log('correctedTheta2', correctedTheta2);
+
+    const newX = Math.cos(correctedTheta2) + intersect.x
+    const newY = Math.sin(correctedTheta2) + intersect.y
     const newPoint = new Point(newX, newY);
 
     return new Line(intersect, newPoint);
