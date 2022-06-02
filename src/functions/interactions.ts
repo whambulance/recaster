@@ -42,17 +42,6 @@ export function getReflection(laserStart: Point, intersect: Point, mirror: Line)
     return new Line(intersect, reflectedPoint);
 }
 
-export interface refractionObject {
-    laserStart: Point,
-    intersect: Point,
-    theta1: number,
-    lineAngle: number,
-    surface: Line,
-    correctedTheta1: number,
-    theta2: number,
-    correctedTheta2: number,
-}
-
 /**
  * Returns an outgoing refracted line, given an incoming line, refractive
  * index, and surface to refract through
