@@ -118,15 +118,20 @@ export class Ray {
       this.currentRay = null as any;
 
       if (newRays.length > 1) {
-        // figure out what to do here, because we will likely need
-        // to resolve multiple raypaths - meaning we would need to
-        // create more raypaths in the parent
-      }
-
-      if (newRays[0] instanceof Line) {
-        this.currentRay = newRays[0];
+        const lastRay = newRays[newRays.length - 1];
+        const leadingRays = newRays.slice(0, newRays.length - 1);
+        if (lastRay instanceof Line) {
+          this.currentRay = lastRay;
+        } else {
+          this.rayResolution = RayResolutions.Ended;
+        }
+        this.resolvedRays.push(...(leadingRays as any));
       } else {
-        this.rayResolution = RayResolutions.Ended;
+        if (newRays[0] instanceof Line) {
+          this.currentRay = newRays[0];
+        } else {
+          this.rayResolution = RayResolutions.Ended;
+        }
       }
 
       counter += 1;
