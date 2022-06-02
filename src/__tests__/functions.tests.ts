@@ -114,56 +114,6 @@ describe('Function: getPerpendicularPoint', () => {
   });
 });
 
-// Unused
-// ----------------------------------------------------------------------------------
-// describe('Function: doesLineIntersectcircle', () => {
-//   const dataset = [
-//     {
-//       name: 'Simple circle 1',
-//       line: new Line(new Point(12, 2), new Point(15, 5)),
-//       center: new Point(14, 3),
-//       edge: new Point(13, 3),
-//       returnBool: true,
-//     },
-//     {
-//       name: 'Simple circle 2',
-//       line: new Line(new Point(18.5, 2.5), new Point(18, 6)),
-//       center: new Point(17.75, 4.25),
-//       edge: new Point(18.75, 4.25),
-//       returnBool: true,
-//     },
-//     {
-//       name: 'Tangent line-circle 1',
-//       line: new Line(new Point(12, 6), new Point(12, 10)),
-//       center: new Point(14, 8),
-//       edge: new Point(12, 8),
-//       returnBool: true,
-//     },
-//     {
-//       name: 'Simple circle 3',
-//       line: new Line(new Point(10, 6), new Point(16, 12)),
-//       center: new Point(14, 8),
-//       edge: new Point(12, 8),
-//       returnBool: true,
-//     },
-//     {
-//       name: 'Line through center of Circle',
-//       line: new Line(new Point(12, 6), new Point(16, 10)),
-//       center: new Point(14, 8),
-//       edge: new Point(12, 8),
-//       returnBool: true,
-//     },
-//   ]
-
-//   // it.each(dataset)('$name', ({ line, center, edge, returnBool}) => {
-//   //   const radius = distanceBetweenPoints(center, edge)
-//   //   console.log('radius', radius)
-//   //   const testLineIntersectCircle = doesLineIntersectcircle(line, center, radius)
-
-//   //   expect(testLineIntersectCircle).toEqual(returnBool)
-//   // })
-// })
-
 describe('Function: getCircleIntersection', () => {
   const dataset = [
     {

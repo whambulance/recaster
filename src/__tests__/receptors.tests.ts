@@ -69,8 +69,30 @@ describe('Receptor: Mirror', () => {
 });
 
 describe('Receptor: Refractor', () => {
+  // describe('Refraction dataset', () => {
+  //   const dataset = [
+  //     // {
+  //     //   name: 'Basic rectangle refraction',
+  //     //   rayStart: new Point(3, 3),
+  //     //   intersect: new Point(5, 4),
+  //     //   rectangle: new Rectangle(
+  //     //     new Point(5, 3), new Point(6, 3), new Point(6, 6), new Point(5, 6)
+  //     //   ),
+  //     //   output: [
+  //     //     new Line(new Point(5, 4), new Point(6, 4.915588815336)),
+  //     //     new Line(new Point(6, 4.915588815336), new Point(7.645119582936019, 17.8109240094401)),
+  //     //   ],
+  //     // },
+  //   ];
 
-  describe('Refraction dataset', () => {
+  //   it.each(dataset)('$name', ({rayStart, intersect, rectangle, output}) => {
+  //     let refractor = new Refractor(rectangle);
+  //     let testOutput = refractor.handle(rayStart, intersect);
+
+  //     expect(testOutput).toStrictEqual(output);
+  //   });
+
+  // });
     const dataset = [
       {
         name: 'Basic rectangle refraction',
