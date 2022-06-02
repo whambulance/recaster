@@ -78,51 +78,6 @@ export function getIntersection(line1: Line, line2: Line): Point | null {
   return intersectionPoint;
 }
 
-// Not working and unused
-// ----------------------------------------------------------------------------------
-// export function doesLineIntersectcircle(line: Line, center: Point, radius: number): boolean {
-//   const dirVector = new Vector(line.p2.x - line.p1.x, line.p2.y - line.p1.y);
-//   const circVector = new Vector(line.p1.x - center.x, line.p1.y - center.y);
-
-//   const slope = (line.p2.y - line.p1.y) / (line.p2.x - line.p1.x)
-
-//   const a = dirVector.dot(dirVector)
-//   const b = 2 * circVector.dot(dirVector)
-//   const c = circVector.dot(circVector) - (radius * radius)
-
-//   console.log('a, b, c', `${a}, ${b}, ${c}`)
-
-//   let discriminant = (b * b) - (4 * a * c)
-
-//   console.log('discriminant', discriminant)
-
-//   if (discriminant < 0) {
-//     console.log('failed at first')
-//     return false
-//   } else {
-//     console.log('continued')
-//     discriminant = Math.sqrt(discriminant)
-
-//     const t1 = (-b - discriminant) / (2 * a);
-//     const t2 = (-b + discriminant) / (2 * a);
-
-//     if( t1 >= 0 && t1 <= 1 ) {
-//       // t1 is the intersection, and it's closer than t2
-//       // (since t1 uses -b - discriminant)
-//       // Impale, Poke
-//       return true;
-//     } else if( t2 >= 0 && t2 <= 1 ) {
-//       // here t1 didn't intersect so we are either started
-//       // inside the sphere or completely past it
-//       // ExitWound
-//       return true;
-//     } else {
-//       // no intn: FallShort, Past, CompletelyInside
-//       return false;
-//     }
-//   }
-// }
-
 /**
  * Test if an incoming line intersects a given circle. If it does, return the
  * intersection points, otherwise return null
