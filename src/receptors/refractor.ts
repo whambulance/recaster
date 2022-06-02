@@ -22,22 +22,41 @@ export class Refractor implements Receptor {
     const returnArray: Line[] = [];
 
     if (this.shape instanceof Rectangle) {
-      let line = this.handleRectangle(rayStart, intersect)
-      let boundsLength = this.getUnsortedBounds().bounds().maxBoundLength();
-      let extendedLine = extendLineByLength(line, boundsLength);
-      console.log('extendedLine', extendedLine)
-      let newIntersectPoint = this.testIntersect(extendedLine)
-      console.log('newIntersectPoint', newIntersectPoint)
+      // This code is basically just taking the rays, and looping over the
+      // shape to see how many times it can refract / reflect inside it.
+      // Needs cleaning up, but seems to work for now
+      let initialRefractLine = this.handleRectangle(rayStart, intersect, false);
+      const boundsLength = this.getUnsortedBounds().bounds().maxBoundLength();
+      initialRefractLine = extendLineByLength(initialRefractLine, boundsLength);
 
-      if (newIntersectPoint) {
-        let internalLine = new Line(extendedLine.p1, newIntersectPoint)
-        returnArray.push(internalLine)
-        let extenalLine = this.handleRectangle(internalLine.p1, internalLine.p2)
-        returnArray.push(extenalLine);
-      } else {
-        returnArray.push(extendedLine)
+      let newIntersectPoint = this.testIntersect(initialRefractLine);
+      let prevIntersectPoint = initialRefractLine.p1;
+
+      if (!newIntersectPoint) {
+        returnArray.push(initialRefractLine);
       }
 
+      while (newIntersectPoint) {
+        initialRefractLine = new Line(prevIntersectPoint, newIntersectPoint);
+
+        returnArray.push(initialRefractLine);
+        let isInternal = false;
+        this.shape.lines.forEach((line: Line) => {
+          if (isPointOnLine(initialRefractLine.p1, line)) {
+            isInternal = true;
+          }
+        });
+
+        let newLine = this.handleRectangle(initialRefractLine.p1, initialRefractLine.p2, true);
+
+        newLine = extendLineByLength(newLine, boundsLength);
+        newIntersectPoint = this.testIntersect(newLine);
+        prevIntersectPoint = newLine.p1;
+
+        if (!newIntersectPoint) {
+          returnArray.push(newLine);
+        }
+      }
     } else if (this.shape instanceof Triangle) {
       // handle
     } else if (this.shape instanceof Circle) {
@@ -53,8 +72,6 @@ export class Refractor implements Receptor {
     }
 
     let intersectedLine: Line = null as any;
-    let startOnEdge: Boolean = false;
-    let startInShape: Boolean = isPointInRectangle(rayStart, this.shape)
 
     this.shape.lines.forEach((line: Line) => {
       const startOnLine = isPointOnLine(rayStart, line);
@@ -63,19 +80,15 @@ export class Refractor implements Receptor {
       if (!startOnLine && intersectOnLine) {
         intersectedLine = line;
       }
-      if (isPointOnLine(rayStart, line)) {
-        startOnEdge = true
-      }
-    })
+    });
 
     if (!intersectedLine) {
-      throw new EvalError('Point provided does not intersect shapes edge')
+      return new Line(rayStart, intersect);
     }
-    
-    let refractionIndex = startOnEdge || startInShape ? 1 / 1.51 : 1.51;
-    // let refractionIndex = 1.51
-    console.log('refractionindex', refractionIndex)
-    const refractedLine = getRefraction(rayStart, intersect, refractionIndex, intersectedLine);
+
+    const startIndex = startInside ? 1.51 : 1;
+    const exitIndex = startInside ? 1 : 1.51;
+    const refractedLine = getRefraction(rayStart, intersect, intersectedLine, startIndex, exitIndex);
 
     return refractedLine;
   }
