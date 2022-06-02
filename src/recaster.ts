@@ -17,7 +17,7 @@ export class Recaster {
   public screenBounds: Bounds = new Bounds();
   public useScreenBounds: boolean = true;
 
-  public emitterDensity: number = .2; 
+  public emitterDensity: number = 0.2;
 
   public solve(): RayOutput[] {
     this.rays = [];
@@ -39,7 +39,7 @@ export class Recaster {
   public initRays(): void {
     this.emitters.forEach((emitter: Emitter, key: number) => {
       if (emitter instanceof Beam) {
-        emitter.density = this.emitterDensity
+        emitter.density = this.emitterDensity;
       }
       const newLines = emitter.cast();
       newLines.forEach((line: Line) => {
@@ -75,7 +75,7 @@ export class Recaster {
 
   public setDensity(density: number): void {
     if (density < 0 || density > 1) {
-      throw new EvalError('Invalid Density value')
+      throw new EvalError('Invalid Density value');
     }
 
     this.emitterDensity = density;

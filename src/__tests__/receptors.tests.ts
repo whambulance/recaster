@@ -1,6 +1,9 @@
-import { Line, Point, Rectangle } from '../classes';
+import { Line, Point, Ray, Rectangle } from '../classes';
 import { Mirror, Refractor } from '../receptors';
 import { extendLineByLength } from '../functions';
+import { Recaster } from '../recaster';
+import { Emitter, RayResolutions, Receptor } from '../interfaces';
+import { Laser } from '../emitters';
 
 describe('Receptor: Mirror', () => {
   test('Invalid input values', () => {
@@ -79,8 +82,8 @@ describe('Receptor: Refractor', () => {
         output: [
           new Line(new Point(6, 15), new Point(7.05996810604, 17)),
           new Line(new Point(7.05996810604, 17), new Point(7.645119582936019, 17.8109240094401)),
-        ],
-      },
+            ],
+          },
       {
         name: 'Advanced angled quadrilateral refraction',
         rayStart: new Point(1, 0),
@@ -101,6 +104,5 @@ describe('Receptor: Refractor', () => {
 
       expect(testOutput).toStrictEqual(output);
     });
-
   });
 });

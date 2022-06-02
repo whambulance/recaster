@@ -1,4 +1,4 @@
-import { Line, Point } from "../classes";
+import { Line, Point } from '../classes';
 
 /**
  * Returns an outgoing reflected line, given an incoming line and mirror to

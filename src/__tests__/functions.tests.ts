@@ -1,7 +1,11 @@
 import { Line, Point, Rectangle } from '../classes';
-import { 
-  extendLineByLength, getCircleIntersection, getIntersection, getPerpendicularLine, 
-  getReflection, distanceBetweenPoints
+import {
+  extendLineByLength,
+  getCircleIntersection,
+  getIntersection,
+  getPerpendicularLine,
+  getReflection,
+  distanceBetweenPoints,
 } from '../functions/index';
 
 describe('Function: getReflection', () => {
@@ -99,17 +103,16 @@ describe('Function: getPerpendicularPoint', () => {
       name: 'Simple 45 degree test',
       line: new Line(new Point(1, 1), new Point(3, 3)),
       point: new Point(2, 2),
-      returnedLine: new Line(new Point(2, 2), new Point(2.7071067811865475, 1.2928932188134525))
-    }
-  ]
+      returnedLine: new Line(new Point(2, 2), new Point(2.7071067811865475, 1.2928932188134525)),
+    },
+  ];
 
   it.each(dataset)('$name', ({ line, point, returnedLine }) => {
     const testReturnedLine = getPerpendicularLine(line, point);
 
     expect(testReturnedLine).toStrictEqual(returnedLine);
-  })
-})
-
+  });
+});
 
 // Unused
 // ----------------------------------------------------------------------------------
@@ -168,19 +171,14 @@ describe('Function: getCircleIntersection', () => {
       line: new Line(new Point(12, 2), new Point(15, 5)),
       center: new Point(14, 3),
       edge: new Point(13, 3),
-      returnedIntersects: [
-        new Point(14, 4),
-        new Point(13, 3),
-      ],
+      returnedIntersects: [new Point(14, 4), new Point(13, 3)],
     },
     {
       name: 'Tangent line-circle 1',
       line: new Line(new Point(12, 6), new Point(12, 10)),
       center: new Point(14, 8),
       edge: new Point(12, 8),
-      returnedIntersects: [
-        new Point(12, 8),
-      ],
+      returnedIntersects: [new Point(12, 8)],
     },
     {
       name: 'No-intersect line 1',
@@ -189,12 +187,12 @@ describe('Function: getCircleIntersection', () => {
       edge: new Point(12, 8),
       returnedIntersects: null,
     },
-  ]
+  ];
 
-  it.each(dataset)('$name', ({ line, center, edge, returnedIntersects}) => {
-    const radius = distanceBetweenPoints(center, edge)
-    const testReturnedPoint = getCircleIntersection(line, center, radius)
+  it.each(dataset)('$name', ({ line, center, edge, returnedIntersects }) => {
+    const radius = distanceBetweenPoints(center, edge);
+    const testReturnedPoint = getCircleIntersection(line, center, radius);
 
-    expect(testReturnedPoint).toStrictEqual(returnedIntersects)
-  })
-})
+    expect(testReturnedPoint).toStrictEqual(returnedIntersects);
+  });
+});

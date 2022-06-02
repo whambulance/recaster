@@ -67,15 +67,15 @@ describe('Emitter: Beam', () => {
         new Line(new Point(2.414213562373095, 2.414213562373095), new Point(3.1213203435596424, 1.7071067811865475)),
       ],
     },
-  ]
+  ];
 
   it.each(datasets)('$name', ({ line, density, perpendicularLine }) => {
-    let testBeam = new Beam(line.p1, line.p2)
+    let testBeam = new Beam(line.p1, line.p2);
     if (density) {
-      testBeam.setDensity(density)
+      testBeam.setDensity(density);
     }
-    let testRays = testBeam.cast()
-    
-    expect(testRays).toStrictEqual(perpendicularLine)
-  })
-})
+    let testRays = testBeam.cast();
+
+    expect(testRays).toStrictEqual(perpendicularLine);
+  });
+});

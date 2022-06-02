@@ -1,6 +1,6 @@
 import { BoundsGroup, Circle, Line, Point, Triangle } from '../classes';
 import { RayResolutions, Receptor } from '../interfaces';
-import { extendLineByLength, getIntersection, getReflection, getRefraction, isPointInRectangle, isPointOnLine } from '../functions';
+import { extendLineByLength, getRefraction, isPointOnLine } from '../functions';
 import { Rectangle } from '../classes/rectangle';
 
 export class Refractor implements Receptor {
@@ -19,7 +19,7 @@ export class Refractor implements Receptor {
   }
 
   public handle(rayStart: Point, intersect: Point): Line[] | RayResolutions.Ended[] {
-    let returnArray: Line[] = [];
+    const returnArray: Line[] = [];
 
     if (this.shape instanceof Rectangle) {
       let line = this.handleRectangle(rayStart, intersect)
@@ -47,19 +47,20 @@ export class Refractor implements Receptor {
     return returnArray;
   }
 
-  private handleRectangle (rayStart: Point, intersect: Point): Line {
+  private handleRectangle(rayStart: Point, intersect: Point, startInside: boolean): Line {
     if (!(this.shape instanceof Rectangle)) {
-      throw new EvalError('Shape is not instance of rectangle')
+      throw new EvalError('Shape is not instance of rectangle');
     }
 
     let intersectedLine: Line = null as any;
     let startOnEdge: Boolean = false;
     let startInShape: Boolean = isPointInRectangle(rayStart, this.shape)
 
-    console.log('lines', this.shape.lines)
-    console.log('intersect', intersect)
     this.shape.lines.forEach((line: Line) => {
-      if (isPointOnLine(intersect, line)) {
+      const startOnLine = isPointOnLine(rayStart, line);
+      const intersectOnLine = isPointOnLine(intersect, line);
+
+      if (!startOnLine && intersectOnLine) {
         intersectedLine = line;
       }
       if (isPointOnLine(rayStart, line)) {
@@ -76,23 +77,23 @@ export class Refractor implements Receptor {
     console.log('refractionindex', refractionIndex)
     const refractedLine = getRefraction(rayStart, intersect, refractionIndex, intersectedLine);
 
-    return refractedLine
+    return refractedLine;
   }
 
   public getUnsortedBounds(): BoundsGroup {
-    let xArray: number[] = []
-    let yArray: number[] = []
+    const xArray: number[] = [];
+    const yArray: number[] = [];
 
     if (this.shape instanceof Rectangle || this.shape instanceof Triangle) {
       this.shape.points.forEach((point: Point) => {
-        xArray.push(point.x)
-        yArray.push(point.y)
-      })
+        xArray.push(point.x);
+        yArray.push(point.y);
+      });
     } else if (this.shape instanceof Circle) {
-      const radius = this.shape.radius
-      const center = this.shape.center
-      xArray.push(center.x + radius, center.x - radius)
-      yArray.push(center.y + radius, center.y - radius)
+      const radius = this.shape.radius;
+      const center = this.shape.center;
+      xArray.push(center.x + radius, center.x - radius);
+      yArray.push(center.y + radius, center.y - radius);
     }
 
     return new BoundsGroup(xArray, yArray);

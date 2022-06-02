@@ -5,7 +5,7 @@ import { distanceBetweenPoints, getPerpendicularLine } from '../functions';
 export class Beam implements Emitter {
   public firstPoint: Point;
   public secondPoint: Point;
-  public density: number = .2;
+  public density: number = 0.2;
 
   constructor(firstPoint: Point, secondPoint: Point) {
     if (firstPoint.x === secondPoint.x && firstPoint.y === secondPoint.y) {
@@ -16,21 +16,18 @@ export class Beam implements Emitter {
   }
 
   public cast(): Line[] {
-    const beamLine = new Line(this.firstPoint, this.secondPoint)
+    const beamLine = new Line(this.firstPoint, this.secondPoint);
     const lines: Line[] = [];
     const totalDistance = distanceBetweenPoints(this.firstPoint, this.secondPoint);
-    const totalLines = totalDistance * this.density
-    const xDelta = (this.secondPoint.x - this.firstPoint.x) / totalLines
-    const yDelta = (this.secondPoint.y - this.firstPoint.y) / totalLines
+    const totalLines = totalDistance * this.density;
+    const xDelta = (this.secondPoint.x - this.firstPoint.x) / totalLines;
+    const yDelta = (this.secondPoint.y - this.firstPoint.y) / totalLines;
 
     for (let i = 1; i < totalLines; i++) {
-      const startPoint = new Point(
-        this.firstPoint.x + (i * xDelta),
-        this.firstPoint.y + (i * yDelta)
-      );
+      const startPoint = new Point(this.firstPoint.x + i * xDelta, this.firstPoint.y + i * yDelta);
 
-      const perpendicularLine = getPerpendicularLine(beamLine, startPoint)
-      lines.push(perpendicularLine)
+      const perpendicularLine = getPerpendicularLine(beamLine, startPoint);
+      lines.push(perpendicularLine);
     }
 
     return lines;
@@ -42,9 +39,9 @@ export class Beam implements Emitter {
 
   public setDensity(density: number): void {
     if (density < 0 || density > 1) {
-      throw new EvalError('Density must be between 0 and 1')
+      throw new EvalError('Density must be between 0 and 1');
     } else {
-      this.density = density
+      this.density = density;
     }
   }
 
