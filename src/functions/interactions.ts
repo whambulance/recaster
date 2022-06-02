@@ -9,37 +9,37 @@ import { Line, Point } from '../classes';
  * @returns Outgoing line after reflection has taken place
  */
 export function getReflection(laserStart: Point, intersect: Point, mirror: Line): Line {
-    // calculate normal for line
-    let normalY = mirror.p2.x - mirror.p1.x;
-    let normalX = mirror.p1.y - mirror.p2.y;
-    const normalLen = Math.sqrt(normalX * normalX + normalY * normalY);
-    normalY = normalY / normalLen;
-    normalX = normalX / normalLen;
-  
-    // calculate the tip of the ray that passed through the intersect,
-    // equidistant from the start point
-    const rayTipXDiff = intersect.x - laserStart.x;
-    const rayTipX = intersect.x + rayTipXDiff;
-    const rayTipYDiff = intersect.y - laserStart.y;
-    const rayTipY = intersect.y + rayTipYDiff;
-  
-    // calculate the vector that goes from the intersection point of the
-    // line and the ray to the tip of the ray
-    const rayX = rayTipX - intersect.x;
-    const rayY = rayTipY - intersect.y;
-  
-    const dotProduct = rayX * normalX + rayY * normalY;
-  
-    const dotNormalX = dotProduct * normalX;
-    const dotNormalY = dotProduct * normalY;
-  
-    let reflectedPointX = rayTipX - dotNormalX * 2;
-    let reflectedPointY = rayTipY - dotNormalY * 2;
-    reflectedPointX = Number(reflectedPointX.toPrecision(12));
-    reflectedPointY = Number(reflectedPointY.toPrecision(12));
-    const reflectedPoint = new Point(reflectedPointX, reflectedPointY);
-  
-    return new Line(intersect, reflectedPoint);
+  // calculate normal for line
+  let normalY = mirror.p2.x - mirror.p1.x;
+  let normalX = mirror.p1.y - mirror.p2.y;
+  const normalLen = Math.sqrt(normalX * normalX + normalY * normalY);
+  normalY = normalY / normalLen;
+  normalX = normalX / normalLen;
+
+  // calculate the tip of the ray that passed through the intersect,
+  // equidistant from the start point
+  const rayTipXDiff = intersect.x - laserStart.x;
+  const rayTipX = intersect.x + rayTipXDiff;
+  const rayTipYDiff = intersect.y - laserStart.y;
+  const rayTipY = intersect.y + rayTipYDiff;
+
+  // calculate the vector that goes from the intersection point of the
+  // line and the ray to the tip of the ray
+  const rayX = rayTipX - intersect.x;
+  const rayY = rayTipY - intersect.y;
+
+  const dotProduct = rayX * normalX + rayY * normalY;
+
+  const dotNormalX = dotProduct * normalX;
+  const dotNormalY = dotProduct * normalY;
+
+  let reflectedPointX = rayTipX - dotNormalX * 2;
+  let reflectedPointY = rayTipY - dotNormalY * 2;
+  reflectedPointX = Number(reflectedPointX.toPrecision(12));
+  reflectedPointY = Number(reflectedPointY.toPrecision(12));
+  const reflectedPoint = new Point(reflectedPointX, reflectedPointY);
+
+  return new Line(intersect, reflectedPoint);
 }
 
 /**
@@ -51,52 +51,50 @@ export function getReflection(laserStart: Point, intersect: Point, mirror: Line)
  * @param surface The line to reflect against
  * @returns Outgoing line after refraction has taken place
  */
-export function getRefraction(laserStart: Point, intersect: Point, index: number, surface: Line): Line {
-    // Calculates angle of laser & line from pi radians on a circle. i.e. y=0 along x-axis
-    const theta1 = Math.atan2(intersect.y - laserStart.y, intersect.x - laserStart.x);
-    const lineAngle = Math.abs(Math.atan2(surface.p2.y - surface.p1.y, surface.p2.x - surface.p1.x) % Math.PI);
+export function getRefraction(
+  laserStart: Point,
+  intersect: Point,
+  surface: Line,
+  startIndex: number = 1,
+  exitIndex: number = 1,
+): Line {
+  // Calculate the absolute angle of the incoming ray 0rad being a line from x1 -> x2
+  const incomingRayAngle = Math.atan2(laserStart.y - intersect.y, laserStart.x - intersect.x);
+  const absIncomingRayAngle = incomingRayAngle < 0 ? 2 * Math.PI - Math.abs(incomingRayAngle) : incomingRayAngle;
 
-    console.log('getrefraction', {
-        laserStart: laserStart,
-        intersect: intersect,
-        index: index,
-        surface: surface,
-    })
+  // Caluclate the absolute angle of the surface
+  const surfaceAngle = Math.atan2(surface.p1.y - intersect.y, surface.p1.x - intersect.x);
+  const absSurfaceAngle = surfaceAngle < 0 ? 2 * Math.PI - Math.abs(surfaceAngle) : surfaceAngle;
 
-    // Take the angle of the line away from theta1, "correcting" it against the x-axis
-    const correctedTheta1 = (((theta1 >= 0 ? 1 : -1) * 1.5707963268) - theta1) + lineAngle;
-    // const correctedTheta1 = (1.5707963268 - theta1);
-    console.log('step1', Math.abs(Math.sin(correctedTheta1)))
-    console.log('step2', Math.abs(Math.sin(correctedTheta1)) * (1 / index))
-    console.log('step3', Math.asin(Math.abs(Math.sin(correctedTheta1)) * (1 / index)))
-    const theta2 = Math.asin(Math.abs(Math.sin(correctedTheta1)) / index);
+  // Calculating the normal angle. Add pi/2 to it,
+  const initialAbsNormalAngle = absSurfaceAngle + (absIncomingRayAngle > absSurfaceAngle ? 1 : -1) * 1.5707963268;
+  let absNormalAngle = 0;
 
-    // BUGGED - FIX THIS - asin not properly calculating
+  const normalRayDiff = Math.abs(initialAbsNormalAngle - absIncomingRayAngle);
+  if (normalRayDiff > Math.PI / 2) {
+    absNormalAngle = (initialAbsNormalAngle > Math.PI / 2 ? 1 : -1) * Math.PI + initialAbsNormalAngle;
+  } else {
+    absNormalAngle = initialAbsNormalAngle;
+  }
 
-    console.log('theta2', theta2)
+  const absInverseNormalAngle = (absNormalAngle < Math.PI / 2 ? 1 : -1) * Math.PI + absNormalAngle;
 
-    // Add the angle of the line back onto theta2, "correcting" it against the x-axis
-    const correctedTheta2 = (((theta1 >= 0 ? 1 : 0) * Math.PI) - theta2) + lineAngle;
+  // Take the angle of the line away from theta1, "correcting" it against the x-axis
+  // const theta1 = (((absIncomingRayAngle >= 0 ? 1 : -1) * 1.5707963268) - absIncomingRayAngle) + surfaceAngle;
+  const theta1 = Math.abs(absNormalAngle - absIncomingRayAngle);
+  const theta2 = Math.asin(Math.sin(theta1) * (startIndex / exitIndex));
 
-    // let output: refractionObject = {
-    //     laserStart: laserStart,
-    //     intersect: intersect,
-    //     theta1: theta1,
-    //     lineAngle: lineAngle,
-    //     surface: surface,
-    //     correctedTheta1: correctedTheta1,
-    //     theta2: theta2,
-    //     correctedTheta2: correctedTheta2,
-    // }
+  if (isNaN(theta2)) {
+    return getReflection(laserStart, intersect, surface);
+  }
 
-    // console.log('output', output)
-    // return output
+  // Add the angle of the line back onto theta2, "correcting" it against the x-axis
+  const absOutgoingAngle =
+    absIncomingRayAngle > absNormalAngle ? absInverseNormalAngle + theta2 : absInverseNormalAngle - theta2;
 
-    console.log('correctedTheta2', correctedTheta2);
+  const newX = Math.cos(absOutgoingAngle) + intersect.x;
+  const newY = Math.sin(absOutgoingAngle) + intersect.y;
+  const newPoint = new Point(newX, newY);
 
-    const newX = Math.cos(correctedTheta2) + intersect.x
-    const newY = Math.sin(correctedTheta2) + intersect.y
-    const newPoint = new Point(newX, newY);
-
-    return new Line(intersect, newPoint);
+  return new Line(intersect, newPoint);
 }
