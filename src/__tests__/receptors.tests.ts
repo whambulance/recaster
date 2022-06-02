@@ -93,37 +93,38 @@ describe('Receptor: Refractor', () => {
   //   });
 
   // });
+
+  describe('Refraction top level', () => {
     const dataset = [
       {
-        name: 'Basic rectangle refraction',
-        rayStart: new Point(2, 11),
-        intersect: new Point(6, 15),
-        rectangle: new Rectangle(
-          new Point(2, 15), new Point(10, 15), new Point(10, 17), new Point(2, 17)
-        ),
+        name: 'Simple refraction on quadrilateral',
+        emitters: [new Laser(new Point(1, 2), new Point(3, 3))],
+        receptors: [new Refractor(new Rectangle(new Point(5, 3), new Point(6, 3), new Point(6, 6), new Point(5, 6)))],
         output: [
-          new Line(new Point(6, 15), new Point(7.05996810604, 17)),
-          new Line(new Point(7.05996810604, 17), new Point(7.645119582936019, 17.8109240094401)),
+          {
+            rays: [
+              new Line(new Point(1, 2), new Point(5, 4)),
+              new Line(new Point(5, 4), new Point(6, 4.310079382733)),
+              new Line(new Point(6, 4.310079382733), new Point(15.44998274103001, 9.0350707533146)),
             ],
+            resolution: RayResolutions.Infinity,
           },
-      {
-        name: 'Advanced angled quadrilateral refraction',
-        rayStart: new Point(1, 0),
-        intersect: new Point(3, 2),
-        rectangle: new Rectangle(
-          new Point(3, 0), new Point(8, 0), new Point(8, 4), new Point(3, 3)
-        ),
-        output: [
-          new Line(new Point(6, 15), new Point(7.05996810604, 17)),
-          new Line(new Point(7.05996810604, 17), new Point(9, 19)),
         ],
       },
     ];
 
-    it.each(dataset)('$name', ({rayStart, intersect, rectangle, output}) => {
-      let refractor = new Refractor(rectangle);
-      let testOutput = refractor.handle(rayStart, intersect);
+    it.each(dataset)('$name', ({ emitters, receptors, output }) => {
+      let recaster = new Recaster();
 
+      emitters.forEach((emitter) => {
+        recaster.addEmitter(emitter as any);
+      });
+
+      receptors.forEach((receptor) => {
+        recaster.addReceptor(receptor as Refractor);
+      });
+
+      const testOutput = recaster.solve();
       expect(testOutput).toStrictEqual(output);
     });
   });
